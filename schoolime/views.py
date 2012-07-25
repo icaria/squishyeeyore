@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 def home_page(request):
     """
     If users are authenticated, direct them to the main page. Otherwise, take
