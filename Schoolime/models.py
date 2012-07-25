@@ -7,5 +7,5 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 
-from django.db import models
+#from django.db import models #enable when there are models of database to avoid warnings
 
