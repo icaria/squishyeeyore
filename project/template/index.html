@@ -1,13 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Schoolime</title>
+    <link rel="stylesheet" style="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" />
 </head>
 
 <body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a href="/login">Login</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <header>
         <h1>Schoolime</h1>
     </header>
+
+    <blockquote>
+        <strong>hello world</strong>
+    </blockquote>
+    
+    <a class="btn" href="">Link</a>
+    <button class="btn" type="submit">
+        Button
+    </button>
+    <input class="btn btn-success" type="button" value="Input">
+    <input class="btn" type="submit" value="Submit">
+    
+
 
     <section>
         <p>Welcome to Schoolime. Please click <a href="/login/">here</a> to log into our web portal.</p>
     </section>
 </body>
+</html>

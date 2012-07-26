@@ -9,8 +9,9 @@ urlpatterns = patterns('',
     # Main Page
     url(r'^$', main_page),
     
-    # Login / Logout
+    # Login, Registration, Logout
     (r'^login', 'django.contrib.auth.views.login'),
+    (r'^accounts/', include('registration.urls')),
     (r'^logout/$', logout_page),
     
     # User Home Page

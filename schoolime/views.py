@@ -9,10 +9,10 @@ from django.contrib.auth.decorators import login_required
 def home_page(request):
     #If users are authenticated, direct them to the main page. Otherwise, take
     #them to the login page.
-    return render_to_response('home.html')
+    return render_to_response('home.html', None, context_instance=RequestContext(request))
 
 def main_page(request):
-    return render_to_response('index.html')
+    return render_to_response('index.html', None, context_instance=RequestContext(request))
 
 def logout_page(request):
     #Log users out and re-direct them to the main page.
