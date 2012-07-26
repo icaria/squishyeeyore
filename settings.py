@@ -4,6 +4,9 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ACCOUNT_ACTIVATION_DAYS = 2
+DEFAULT_FROM_EMAIL = 'registration@schoolime.com'
+LOGIN_REDIRECT_URL = '/home'
+
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),

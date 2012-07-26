@@ -1,30 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        {% block head %}
-            <title>Schoolime | {% block title %}{% endblock %}</title>
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}
-            <header>
-                <h1>Schoolime | Home</h1>
-            </header>
-        
-            <section>
-                <ul>
-                    <li><a href="/home">home</a></li>
-                    <li><a href="/logout/">logout</a></li>
-                </ul>
-            </section>
-        
-            {% block content %}{% endblock %}
-        
-            <footer>
-                <span>© 2012, Schoolime</span>
-            </footer>
-        {% endblock %}
 
-    </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load i18n %}
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <link rel="stylesheet" style="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" />
+    <title>{% block title %}User test{% endblock %}</title>
+</head>
+
+<body>
+    <div id="header">
+        {% block header %}
+        | 
+
+        {% if user.is_authenticated %}
+        {% trans "Logged in" %}: {{ user.username }} 
+        (<a href="{% url auth_logout %}">{% trans "Log out" %}</a> | 
+        <a href="{% url auth_password_change %}">{% trans "Change password" %}</a>)
+        {% else %}
+        <a href="{% url auth_login %}">{% trans "Log in" %}</a>
+        {% endif %}
+        <hr />
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %}
+        <hr />
+        {% endblock %}
+    </div>
+</body>
+
 </html>

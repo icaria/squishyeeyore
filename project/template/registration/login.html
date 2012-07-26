@@ -1,39 +1,15 @@
 {% extends "base.html" %}
-{% comment %}
+{% load i18n %}
 
-Main page to authenticate users.
+{% block content %}
+<form method="post" action=".">
+  {% csrf_token %}
+  {{ form.as_p }}
 
-{% endcomment %}
+  <input type="submit" value="{% trans 'Log in' %}" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</form>
 
-{% block head %}
-    <title>Django Consultants | Login</title>
-{% endblock %}
-
-{% block body %}
-    <header>
-        <h1>Schoolime</h1>
-        <h2>Login Page</h2>
-    </header>
-
-    <section>
-        {% if form.errors %}
-            <p>Your username and password didn't match, please try again.</p>
-        {% endif %}
-
-        <form method="post" action=".">
-            {% csrf_token %}
-            <p>
-                {{ form.username }}
-            </p>
-            <p>
-                {{ form.password }}
-            </p>
-            {% if next %}
-                <input type="hidden" name="next" value="{{ next }}" />
-            {% else %}
-                <input type="hidden" name="next" value="/home" />
-            {% endif %}
-            <input type="submit" value="login" />
-        </form>
-    </section>
+<p>{% trans "Forgot password" %}? <a href="{% url auth_password_reset %}">{% trans "Reset it" %}</a>!</p>
+<p>{% trans "Not member" %}? <a href="{% url registration_register %}">{% trans "Register" %}</a>!</p>
 {% endblock %}
