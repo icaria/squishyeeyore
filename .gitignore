@@ -1,6 +1,6 @@
 # Python Django #
 ###############
-.DS_Store
+*.settings
 *.egg-info
 *.pyc
 *.pyo
