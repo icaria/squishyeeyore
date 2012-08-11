@@ -1,3 +1,4 @@
+
 from django.conf.urls.defaults import patterns, include, url
 from schoolime.views import *
 
