@@ -154,7 +154,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'email_usernames',
     'registration',
-    'login',
+    'schoolime',
 )
 
 # A sample logging configuration. The only tangible logging
