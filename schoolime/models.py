@@ -2,19 +2,23 @@ from django.db import models
 
 # Create your models here.
 
+
+#========================================
+# Location
+#========================================
 class School(models.Model):
     name = models.CharField(max_length=60)
     class Meta:
         db_table = "School"
 
 class Country(models.Model):
-    country = models.CharField(max_length=60)
+    country = models.CharField(max_length=30)
     class Meta:
         db_table = "Country"
     
 class ProvinceState(models.Model):
     country = models.ForeignKey(Country)
-    province_state = models.CharField(max_length=60)
+    province_state = models.CharField(max_length=30)
     class Meta:
         db_table = "ProvinceState"
 
@@ -27,7 +31,18 @@ class Address(models.Model):
     class Meta:
         db_table = "Address"
 
+#========================================
+# Coursewire
+#========================================
+
+class Rank(models.Model):
+    number_stars = models.IntegerField()
+    title = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Rank"
+
 class Student(models.Model):
+    rank = models.ForeignKey(Rank)
     school = models.ForeignKey(School)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -77,4 +92,36 @@ class Transcript(models.Model):
     grade = models.IntegerField(blank=True)
     class Meta:
         db_table = "Transcript"
+
+#========================================
+# File Sharing & Storage
+#========================================
+
+class Drive(models.Model):
+    student = models.ForeignKey(Student)
+    size = models.IntegerField(max_length=20)
+    class Meta:
+        db_table = "Drive"
+
+#========================================
+# The Fun Stuff
+#========================================
     
+class Activity(models.Model):
+    student = models.ForeignKey(Student)
+    class Meta:
+        db_table = "Activity"
+
+
+class Achievement(models.Model):
+    description = models.CharField(max_length=120)
+    requirement = models.CharField(max_length=255)
+    class Meta:
+        db_table = "Achievement"
+
+class TrophyCase(models.Model):
+    student = models.ForeignKey(Student)
+    achievement = models.ForeignKey(Achievement)
+    class Meta:
+        db_table = "TrophyCase"
+
