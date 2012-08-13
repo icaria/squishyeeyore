@@ -8,13 +8,14 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Main Page
-    url(r'^$', main_page),
+    url(r'^$', main),
     
     # Login, Registration, Logout
-    (r'^', include('registration.urls')),
+    #(r'^', include('registration.urls')),
+    (r'^login/$', login),
     
     # User Home Page
-    (r'^home$', home_page),
+    (r'^home$', home),
     
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
