@@ -3,10 +3,6 @@ import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-ACCOUNT_ACTIVATION_DAYS = 2
-DEFAULT_FROM_EMAIL = 'registration@schoolime.com'
-LOGIN_REDIRECT_URL = '/home'
-
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -88,6 +84,18 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+# Login Redirect
+LOGIN_REDIRECT_URL = '/home'
+
+# Email Settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'adm.schoolime@gmail.com'
+EMAIL_HOST_PASSWORD = 'Pass12345Word'
+ACCOUNT_ACTIVATION_DAYS = 2
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f8s0x(w0m*!-6ne6^ujt#cqu!kz1(13-ilhv74)cja=qysb0@f'
 
@@ -126,6 +134,13 @@ TEMPLATE_DIRS = (
     os.path.join(os.getcwd(), "project/template"),
 )
 
+AUTHENTICATION_BACKENDS = (
+    # Our custom auth backend that allows email addresses to be used as usernames.
+    'email_usernames.backends.EmailOrUsernameModelBackend', 
+    # Default auth backend that handles everything else.
+    'django.contrib.auth.backends.ModelBackend', 
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -137,8 +152,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'email_usernames',
     'registration',
-    'schoolime',
+    'login',
 )
 
 # A sample logging configuration. The only tangible logging

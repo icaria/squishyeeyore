@@ -6,12 +6,12 @@ Main page of the portal.
 {% endcomment %}
 
 {% block title %}
-Portal
+{{user.first_name}} {{user.last_name}}
 {% endblock %}
 
 {% block content %}
     <section>
-        <h2>Welcome, {{ user.username }}</h2>
+        <h2>Welcome, {{ user.first_name }}</h2>
         <p>This is the home page.</p>
     </section>
 {% endblock %}

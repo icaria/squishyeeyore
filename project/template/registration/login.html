@@ -4,7 +4,17 @@
 {% block content %}
 <form method="post" action=".">
   {% csrf_token %}
-  {{ form.as_p }}
+  {{ form.non_field_errors }}
+  <p>
+      <label for="id_username">Username/Email:</label>
+      {{ form.username.errors }}
+      <input id="id_username" type="text" name="username" maxlength="75" required="True" />
+  </p>
+  <p>
+      <label for="id_password">Password:</label>
+      {{ form.password.errors }}
+      <input type="password" name="password" id="id_password" required="True" />
+  </p>
 
   <input type="submit" value="{% trans 'Log in' %}" />
   <input type="hidden" name="next" value="{{ next }}" />

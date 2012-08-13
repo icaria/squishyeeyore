@@ -1,6 +1,6 @@
 
 from django.conf.urls.defaults import patterns, include, url
-from schoolime.views import *
+from login.views import *
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin

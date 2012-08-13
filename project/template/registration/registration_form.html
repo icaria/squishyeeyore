@@ -3,7 +3,38 @@
 
 {% block content %}
 <form method="post" action=".">
-  {{ form.as_p }}
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <p>
+      <label for="id_firstname">First Name:</label>
+      {{ form.first_name.errors }}
+      <input id="id_firstname" type="text" class="required" name="first_name" maxlength="30" />
+  </p>
+  <p>
+      <label for="id_lastname">Last Name:</label>
+      {{ form.last_name.errors }}
+      <input id="id_lastname" type="text" class="required" name="last_name" maxlength="30" />
+  </p>
+  <p>
+      <label for="id_username">Username:</label>
+      {{ form.username.errors }} 
+      <input id="id_username" type="text" name="username" maxlength="75" />
+  </p>
+  <p>
+      <label for="id_email">Email address:</label>
+      {{ form.email.errors }} 
+      <input id="id_email" type="text" class="required" name="email" maxlength="75" />
+  </p>
+  <p>
+      <label for="id_password1">Password:</label>
+      {{ form.password1.errors }} 
+      <input id="id_password1" type="password" class="required" name="password1" />
+  </p>
+  <p>
+      <label for="id_password2">Password (again):</label>
+      {{ form.password2.errors }} 
+      <input id="id_password2" type="password" class="required" name="password2" />
+  </p>
 
   <input type="submit" value="{% trans 'Submit' %}" />
 </form>
