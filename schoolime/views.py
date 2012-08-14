@@ -19,24 +19,29 @@ def user_login_required(f):
     wrap.__name__=f.__name__
     return wrap
 
-def main_view(request):
-    return render_to_response('index.html', None, context_instance=RequestContext(request))
+def index_view(request):
+    if request.session["loggedin"]:
+        return HttpResponseRedirect("/home")
+
+    return render(request, 'index.html')
 
 def login_view(request):
     
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
+            form.full_clean()
             email = form.cleaned_data['email']
             pw = form.cleaned_data['pw']
             
             try:
                 user = Student.objects.get(email=email, password=pw)
                 request.session['user'] = user
+                request.session['loggedin'] = True
+                return HttpResponseRedirect("/home")
             except Student.DoesNotExist:
-                return HttpResponse("Your username and password didn't match.")
-            
-            return HttpResponseRedirect('/home') # Redirect after POST
+                form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
+                
     else:
         form = LoginForm()
     
@@ -44,15 +49,17 @@ def login_view(request):
 
 @user_login_required
 def home_view(request):
-    user = request.session['user']   
-    return render_to_response('home.html', None, context_instance=RequestContext(request))
+    user = request.session.get('user')
+    form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
+    return render(request, 'home.html', {'form': form,})
 
 def logout_view(request):
     try:
         del request.session['user']
+        request.session['loggedin'] = False
     except KeyError:
         pass
-    return render_to_response('index.html', None, context_instance=RequestContext(request))
+    return HttpResponseRedirect("/")
 
 
     

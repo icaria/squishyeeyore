@@ -8,7 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Main Page
-    url(r'^$', main_view),
+    url(r'^$', index_view),
     
     # Login, Registration, Logout
     #(r'^', include('registration.urls')),
