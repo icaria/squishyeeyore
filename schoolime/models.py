@@ -56,6 +56,9 @@ class Student(models.Model):
     class Meta:
         db_table = "Student"
 
+class Profile(models.Model):
+    pass
+
 class Term(models.Model):
     term = (
         ('W', 'Winter'),
@@ -64,6 +67,7 @@ class Term(models.Model):
     )
     term = models.CharField(max_length=1)
     year = models.IntegerField()
+    is_current = models.BooleanField()
     class Meta:
         db_table = "Term"
 
@@ -79,16 +83,10 @@ class Course(models.Model):
     name = models.CharField(max_length=30)
     class Meta:
         db_table = "Course"
-    
-class Offering(models.Model):
-    course = models.ForeignKey(Course)
-    term = models.ForeignKey(Term)
-    class Meta:
-        db_table = "Offering"
 
 class Transcript(models.Model):
     student = models.ForeignKey(Student)
-    offering = models.ForeignKey(Offering)
+    #offering = models.ForeignKey(Offering)
     grade = models.IntegerField(blank=True)
     class Meta:
         db_table = "Transcript"

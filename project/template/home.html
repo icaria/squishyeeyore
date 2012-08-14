@@ -2,10 +2,15 @@
 {% block title %}{{ form.first_name.value }} {{ form.last_name.value }}{% endblock %}
 {%  }
 {% block content %}
-    <section>
-        <h2>Welcome, {{ form.first_name.value }}</h2>
-        <p>This is the home page.</p>
-    </section>
+<div class="hero-unit">
+  <h2>Welcome, {{ form.first_name.value }}</h2>
+  <p>This is the home page.</p>
+  <p>
+    <a class="btn btn-success btn-large">
+      Learn more
+    </a>
+  </p>
+</div>
 {% endblock %}
 
 {% }
