@@ -18,8 +18,8 @@ def user_login_required(f):
     return wrap
 
 def index_view(request):
-    if request.session["loggedin"]:
-        return HttpResponseRedirect("/home")
+    #if request.session["loggedin"]:
+    #    return HttpResponseRedirect("/home")
 
     return render(request, 'index.html')
 
