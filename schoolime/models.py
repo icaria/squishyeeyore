@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-
 #========================================
 # Location
 #========================================
@@ -42,22 +41,26 @@ class Rank(models.Model):
         db_table = "Rank"
 
 class Student(models.Model):
-    rank = models.ForeignKey(Rank)
-    school = models.ForeignKey(School)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     user_name = models.CharField(max_length=30)
     email = models.CharField(max_length=75,unique=True)
-    phone = models.IntegerField(unique=True, blank=True)
     password = models.CharField(max_length=128)
     is_active = models.BooleanField()
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
     class Meta:
         db_table = "Student"
 
 class Profile(models.Model):
-    pass
+    student = models.ForeignKey(Student)
+    rank = models.ForeignKey(Rank)
+    school = models.ForeignKey(School)
+    phone = models.IntegerField(unique=True, blank=True)
+    birthday = models.DateField()
+    about = models.CharField(max_length=256)
+    last_login = models.DateTimeField()
+    date_joined = models.DateTimeField()
+    class Meta:
+        db_table = "Profile"
 
 class Term(models.Model):
     term = (
@@ -84,9 +87,23 @@ class Course(models.Model):
     class Meta:
         db_table = "Course"
 
+class Professor(models.Model):
+    faculty = models.ForeignKey(Faculty)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Professor"
+
+class Offering(models.Model):
+    course = models.ForeignKey(Course)
+    term = models.ForeignKey(Term)
+    professor = models.ForeignKey(Professor)
+    class Meta:
+        db_table = "Offering"
+    
 class Transcript(models.Model):
     student = models.ForeignKey(Student)
-    #offering = models.ForeignKey(Offering)
+    offering = models.ForeignKey(Offering)
     grade = models.IntegerField(blank=True)
     class Meta:
         db_table = "Transcript"
@@ -109,7 +126,6 @@ class Activity(models.Model):
     student = models.ForeignKey(Student)
     class Meta:
         db_table = "Activity"
-
 
 class Achievement(models.Model):
     description = models.CharField(max_length=120)

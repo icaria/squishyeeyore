@@ -8,7 +8,8 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  * 
  * To change navbar color, change color references in .navbar-inner, .navbar .divider-vertical, .navbar .btn-navbar,
- * .navbar .nav .active > a (link background), .navbar .nav > li > a (link text color), .navbar-fixed-top .brand (brand color)
+ * .navbar .nav .active > a (link background), .navbar .nav > li > a (link text color), .navbar-fixed-top .brand (brand color) and
+ * .navbar (font color)
  * Current Colors:
  * Lime Green #41A317
  * Green 4 #347C17
@@ -3613,7 +3614,7 @@ input[type="submit"].btn.btn-mini {
 }
 
 .navbar {
-  color: #999999;
+  color: #FFFFFF;
 }
 
 .navbar .brand:hover {

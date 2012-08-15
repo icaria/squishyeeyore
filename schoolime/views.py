@@ -1,10 +1,8 @@
 # Create your views here.
-from django.contrib.auth import logout
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from schoolime.models import *
 from schoolime.forms import *
 
@@ -47,12 +45,17 @@ def login_view(request):
     
     return render(request, 'registration/login.html', {'form': form,})
 
-@user_login_required
-def home_view(request):
-    user = request.session.get('user')
-    form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
-    return render(request, 'home.html', {'form': form,})
-
+def register_view(request):
+    
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = RegisterForm()
+    
+    return render(request, 'registration/registration_form.html', {'form': form,})
+    
 def logout_view(request):
     try:
         del request.session['user']
@@ -61,7 +64,14 @@ def logout_view(request):
         pass
     return HttpResponseRedirect("/")
 
+@user_login_required
+def home_view(request):
+    user = request.session.get('user')
+    form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
+    return render(request, 'home.html', {'form': form,})
 
-    
+@user_login_required
+def profile_view(request):
+    pass
 
     

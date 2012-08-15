@@ -6,22 +6,11 @@
 <head>
     <link rel="stylesheet" style="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" />
     <title>{% block title %}Schoolime{% endblock %}</title>
-    {% block script %}
-    <script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
-    <script>
-        $(document).ready( function() {
-            $('.dropdown-toggle').dropdown();
-        }); 
-    </script>
-    {% endblock %}
 </head>
 
 <body>
     <div id="header" class="container">
         {% block header %}
-
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
               <div class="container">
@@ -29,26 +18,27 @@
                   <a class="brand" href="{% if request.session.loggedin %}/home{% else %}/{% endif %}">Schoolime</a>
                   {% if request.session.loggedin %}
                   <form class="navbar-search pull-left" action="">
-                    <i class="icon-search icon-white"></i> <input type="text" class="search-query span2" placeholder="Search" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search'">
+                    <i class="icon-search icon-white"> </i> <input type="text" class="search-query span2" placeholder="Search" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search'">
                   </form>
+                  {% endif %}
                   <ul class="nav pull-right">
+                    {% if request.session.loggedin %}
                     <li><a href="#">{{ request.session.user.first_name }} {{ request.session.user.last_name }}</a></li>
-                    <li class="divider-vertical"></li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> Account <b class="caret"></b></a>
+                    <li class="divider-vertical"> </li>
+                    <li class="dropdown" id="account">
+                      <a href="#account" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"> </i> Account <b class="caret"> </b></a>
                       <ul class="dropdown-menu">
                         <li><a href="#">Action</a></li>
                         <li><a href="#">Another action</a></li>
                         <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
+                        <li class="divider"> </li>
                         <li><a href="/logout/">Logout</a></li>
                       </ul>
                     </li>
                     {% else %}
-                  <ul class="nav pull-right">
-                    <li>
-                        <a href="/login/">Login</a>
-                    </li>
+                    <li><a href="/login/">Login</a></li>
+                    <li class="divider-vertical"> </li>
+                    <li><a href="/register/">Register</a></li>
                     {% endif %}
                   </ul>
                 </div><!-- /.nav-collapse -->
@@ -69,12 +59,44 @@
     <div id="footer" class="container">
         {% block footer %}
         <hr />
+        <div class="navbar navbar-fixed-bottom">
+            <div class="navbar-inner">
+              <div class="container">
+                <div class="nav-collapse">
+                  <ul class="nav pull-left">
+                      <li><p class="navbar-text">Schoolime © 2012</p></li>
+                  </ul>
+                  <ul class="nav pull-right">
+                      <li><a href="#">About</a></li>
+                      <li><p class="navbar-text"> · </p></li>
+                      <li><a href="#">Careers</a></li>
+                      <li><p class="navbar-text"> · </p></li>
+                      <li><a href="#">Privacy</a></li>
+                      <li><p class="navbar-text"> · </p></li>
+                      <li><a href="#">Terms</a></li>
+                      <li><p class="navbar-text"> · </p></li>
+                      <li><a href="#">Help</a></li>
+                  </ul>
+                </div><!-- /.nav-collapse -->
+              </div>
+            </div><!-- /navbar-inner -->
+          </div><!-- /navbar -->
+        {% endblock %}
+    </div>
+    
+    {% block script %}
         <!-- javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        
-        {% endblock %}
-    </div>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+        <script>
+            $(document).ready( function() {
+                $('.dropdown-toggle').dropdown();
+            }); 
+        </script>
+    {% endblock %}
 </body>
 
 </html>

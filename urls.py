@@ -10,8 +10,8 @@ urlpatterns = patterns('',
     url(r'^$', index_view),
     
     # Login, Registration, Logout
-    #(r'^', include('registration.urls')),
     (r'^login/$', login_view),
+    (r'^register/$', register_view),
     (r'^logout/$', logout_view),
     
     # Home Page
