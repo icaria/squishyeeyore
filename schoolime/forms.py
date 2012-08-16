@@ -11,5 +11,13 @@ class HomeForm(forms.ModelForm):
         fields = ('first_name', 'last_name')
         
 class RegisterForm(forms.ModelForm):
+    password2 = forms.CharField(widget=forms.PasswordInput, label="Password2")
     class Meta:
         model = Student
+        fields = ('first_name', 'last_name', 'user_name', 'email', 'password')
+        widgets = {
+                   'password': forms.PasswordInput(),
+                   }
+
+    def clean_user_name(self):
+        return self.cleaned_data['user_name'] or None

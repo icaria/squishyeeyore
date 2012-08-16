@@ -1,56 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<form method="post" action="." class="form-horizontal">
-  {% csrf_token %}
-
-  <table align="center">
-      <tr>
-          <td>
-              <h3>Schoolime Login</h3>
-              <hr>
-          </td>
-      </tr>
-      {% if form.errors %}
-      <tr height="25">
-          <td align="left" valign="top"><div class="alert alert-error">The password you entered is incorrect, please try again.</div></td>
-      </tr>
-      {% endif %}
-      <tr>
-          <td>
-              <table width="400">
-                  {% for field in form %}
-                  <tr>
-                      <td></td>
-                      <td>
-                          {{ field.errors }}
-                      </td>
-                  </tr>
-                  <tr height="35">
-                    <td>
-                        {{ field.label_tag }}
-                    </td>
-                    <td align="right">
-                        {{ field }}
-                    </td>
-                  </tr>
-                  {% endfor %}
-              </table>
-          </td>
-      </tr>
-      <tr>
-        <td align="right">
-          <input type="submit" value="Login" />
-          {% if next %}
-          <input type="hidden" name="next" value="{{ next }}" />
-          {% else %}
-          <input type="hidden" name="next" value="/home" />
-          {% endif %}
-        </td>
-      </tr>
-      
-  </table>
-
-</form>
+    <table align="center" width="450">
+        <tr>
+            <td>
+                <div>
+                    <form id="frm_login" method="post" action="." class="form-horizontal">
+                        {% csrf_token %}
+                        <fieldset>
+                            <h3>Login</h3>
+                            <hr>
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-error">
+                                <button class="close" data-dismiss="alert">×</button>
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error|escape }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="control-group">  
+                            <table width="450">
+                                <tr>
+                                    <td width="50%">
+                                        <label>Email</label><input id="id_email" type="text" name="email" maxlength="75" />    
+                                    </td>
+                                    <td width="50%">
+                                        <label>Password</label><input id="id_pw" type="password" name="pw" maxlength="128" />    
+                                    </td>
+                                </tr>
+                            </table>    
+                            </div>
+                            <div align="left">
+                                <input type="submit" name="login" class="btn btn-success" value="Login" />
+                                <a href="/register/" name="register" class="btn btn-warning">Register Now</a>
+                                {% if next %}
+                                <input type="hidden" name="next" value="{{ next }}" />
+                                {% else %}
+                                <input type="hidden" name="next" value="/home" />
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                    </form>
+                </div><!-- .span -->
+            </td>
+        </tr>
+    </table>
 {% endblock %}

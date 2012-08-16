@@ -43,7 +43,7 @@ class Rank(models.Model):
 class Student(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    user_name = models.CharField(max_length=30)
+    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
     email = models.CharField(max_length=75,unique=True)
     password = models.CharField(max_length=128)
     is_active = models.BooleanField()

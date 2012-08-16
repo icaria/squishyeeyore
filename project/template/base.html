@@ -88,13 +88,60 @@
         <!-- javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
         <script>
             $(document).ready( function() {
                 $('.dropdown-toggle').dropdown();
-            }); 
+
+                $('#frm_register').validate({
+                    rules: {
+                      first_name: {
+                        required: true,
+                        maxlength: 30  
+                      },
+                      last_name: {
+                        required: true,
+                        maxlength: 30    
+                      },
+                      email: {
+                        required: true,
+                        email: true,
+                        remote: "/check-registration/"    
+                      },
+                      user_name: {
+                        minlength: 4,
+                        maxlength: 30,
+                        remote: "/check-registration/"
+                      },
+                      password: {
+                        required: true
+                      },
+                      password2: {
+                        required: true,
+                        equalTo: '#id_password'
+                      }
+                    },
+                    messages: {
+                        email: {
+                            remote: jQuery.format("This email is already in use.")
+                        },
+                        user_name: {
+                            remote: jQuery.format("This username is already in use.")
+                        },
+                    },
+                    highlight: function(label) {
+                        $(label).closest('.control-group').addClass('error');
+                    },
+                    success: function(label) {
+                        label
+                            .text('OK!').addClass('valid')
+                            .closest('.control-group').addClass('success');
+                    }
+                });
+            });
         </script>
     {% endblock %}
 </body>

@@ -103,7 +103,7 @@ SECRET_KEY = 'f8s0x(w0m*!-6ne6^ujt#cqu!kz1(13-ilhv74)cja=qysb0@f'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+#    'django.template.loaders.eggs.Loader',
 )
 
 # List of default context processors in 1.4
@@ -115,7 +115,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages",)
+    "django.contrib.messages.context_processors.messages",
+)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -153,8 +154,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-#    'email_usernames',
-#    'registration',
     'schoolime',
 )
 
