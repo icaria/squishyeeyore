@@ -45,8 +45,14 @@
               </div>
             </div><!-- /navbar-inner -->
           </div><!-- /navbar -->
-        <br>
-        <hr />
+        <div style="padding-top: 60px" align="center">
+        {% if request.session.loggedin and not request.session.user.is_verified %}
+        <div class="alert alert-info">
+            <button class="close" data-dismiss="alert">×</button>
+            Your account has not been verified. Please check your email to verify your account. Click here to resent verification email.
+        </div>
+        {% endif %}
+        </div>
         {% endblock %}
     </div>
 
@@ -54,11 +60,11 @@
         {% block content %}
 
         {% endblock %}
+        <hr />
     </div>
 
     <div id="footer" class="container">
         {% block footer %}
-        <hr />
         <div class="navbar navbar-fixed-bottom">
             <div class="navbar-inner">
               <div class="container">
@@ -112,7 +118,6 @@
                         remote: "/check-registration/"    
                       },
                       user_name: {
-                        minlength: 4,
                         maxlength: 30,
                         remote: "/check-registration/"
                       },

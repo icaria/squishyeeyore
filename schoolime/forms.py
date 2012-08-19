@@ -20,4 +20,4 @@ class RegisterForm(forms.ModelForm):
                    }
 
     def clean_user_name(self):
-        return self.cleaned_data['user_name'] or None
+        return self.cleaned_data['user_name'].strip() or None

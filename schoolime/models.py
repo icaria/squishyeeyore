@@ -47,8 +47,15 @@ class Student(models.Model):
     email = models.CharField(max_length=75,unique=True)
     password = models.CharField(max_length=128)
     is_active = models.BooleanField()
+    is_verified = models.BooleanField()
     class Meta:
         db_table = "Student"
+
+class VerificationKey(models.Model):
+    student = models.ForeignKey(Student)
+    key = models.CharField(max_length=30)
+    class Meta:
+        db_table = "VerificationKey"
 
 class Profile(models.Model):
     student = models.ForeignKey(Student)

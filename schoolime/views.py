@@ -1,9 +1,13 @@
 # Create your views here.
+import random, string
 from django.shortcuts import render
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 from schoolime.models import *
 from schoolime.forms import *
@@ -32,28 +36,44 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             pw = form.cleaned_data['pw']
-            
-            try:
-                user = Student.objects.get(Q(email=email)|Q(user_name=email), Q(password=pw))
+            user = Student.objects.get(Q(email=email)|Q(user_name=email))
+                  
+            if check_password(pw, user.password):
                 request.session['user'] = user
                 request.session['loggedin'] = True
                 return HttpResponseRedirect("/home")
-            except Student.DoesNotExist:
+            else:
                 form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
+                
     else:
         form = LoginForm()
     
     return render(request, 'registration/login.html', {'form': form,})
-
+    
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
                               user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
-                              password=form.cleaned_data['password'], is_active=False)
+                              password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False)
             
             student.save()
+            
+            # send verification email
+            key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(20));
+            verification = VerificationKey(student=student, key=key)
+            verification.save()
+            
+            # temporary link goes to localhost
+            link, subject, from_email, to = "//http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+            html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
+            text_content = strip_tags(html_content)
+            
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            
             return HttpResponseRedirect("/register-success/")
     else:
         form = RegisterForm()
@@ -62,6 +82,26 @@ def register_view(request):
 
 def register_success_view(request):
     return render(request, 'registration/registration_complete.html')
+
+def activate_user_view(request, key):
+    
+    try:
+        #First, the code tries to look up the user based on the activation key
+        user = VerificationKey.objects.get(key=key)
+        student = Student.objects.get(id=user.student_id)
+        
+        #If found, and the user is not active, the user's account is activated.
+        if student.is_verified == False:
+            student.is_verified = True
+            student.save()
+        #Else, if the user is already active, an error page is passed
+        else:
+            raise Http404(u'Account already activated')
+    #If no user is found with the activation key, an error page is passed
+    except VerificationKey.DoesNotExist:
+        raise Http404(u'No activation key found')
+ 
+    return render(request, 'registration/activate.html')
     
 def logout_view(request):
     try:

@@ -15,5 +15,6 @@ def check_registration(request):
         if Student.objects.filter(user_name__iexact=user_name):
             response_str = "false"
         else:
-            response_str = "true"
+            response_str = "true"       
+    
     return HttpResponse(response_str)

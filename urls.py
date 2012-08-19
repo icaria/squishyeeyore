@@ -11,19 +11,20 @@ urlpatterns = patterns('',
     url(r'^$', index_view),
 
     # Login, Registration, Logout
-    (r'^login/$', login_view),
-    (r'^register-success/$', register_success_view),
-    (r'^register/$', register_view),
-    (r'^logout/$', logout_view),
+    (r'^activate/(?P<key>[a-zA-Z0-9_.-]+)/', activate_user_view),
+    (r'^login/', login_view),
+    (r'^register-success/', register_success_view),
+    (r'^register/', register_view),
+    (r'^logout/', logout_view),
     
     # Validation
-    (r'^check-registration', check_registration),
+    #(r'^check-registration', check_registration),
     
     # Home Page
     (r'^home$', home_view),
     
     # Profile Page
-    (r'^', home_view),
+    #(r'^', home_view), FUCKING PIECE OF SHIT
     
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
