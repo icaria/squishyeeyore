@@ -66,7 +66,7 @@ def register_view(request):
             verification.save()
             
             # temporary link goes to localhost
-            link, subject, from_email, to = "//http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+            link, subject, from_email, to = "http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
             html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
             text_content = strip_tags(html_content)
             
@@ -94,6 +94,8 @@ def activate_user_view(request, key):
         if student.is_verified == False:
             student.is_verified = True
             student.save()
+            
+            VerificationKey.objects.get(key=key).delete()
         #Else, if the user is already active, an error page is passed
         else:
             raise Http404(u'Account already activated')

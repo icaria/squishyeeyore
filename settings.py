@@ -88,13 +88,12 @@ STATICFILES_FINDERS = (
 LOGIN_REDIRECT_URL = '/home'
 
 # Email Settings
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'mail.schoolime.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'adm.schoolime@gmail.com'
-EMAIL_HOST_PASSWORD = 'Pass12345Word'
-ACCOUNT_ACTIVATION_DAYS = 2
+EMAIL_HOST_USER = 'administration@schoolime.com'
+EMAIL_HOST_PASSWORD = 'Pass123Word'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f8s0x(w0m*!-6ne6^ujt#cqu!kz1(13-ilhv74)cja=qysb0@f'

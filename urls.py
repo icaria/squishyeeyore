@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     (r'^logout/', logout_view),
     
     # Validation
-    #(r'^check-registration', check_registration),
+    (r'^check-registration', check_registration),
     
     # Home Page
     (r'^home$', home_view),
