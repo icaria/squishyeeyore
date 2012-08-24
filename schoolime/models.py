@@ -5,10 +5,29 @@ from django.db import models
 #========================================
 # Location
 #========================================
+class SchoolType(models.Model):
+    type = models.CharField(max_length=60)
+    class Meta:
+        db_table = "SchoolType"
+
 class School(models.Model):
+    type = models.ForeignKey(SchoolType)
     name = models.CharField(max_length=60)
     class Meta:
         db_table = "School"
+
+class Faculty(models.Model):
+    school = models.ForeignKey(School)
+    name = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Faculty"
+
+class Course(models.Model):
+    faculty = models.ForeignKey(Faculty)
+    code = models.IntegerField()
+    name = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Course"
 
 class Country(models.Model):
     country = models.CharField(max_length=30)
@@ -34,12 +53,6 @@ class Address(models.Model):
 # Coursewire
 #========================================
 
-class Rank(models.Model):
-    number_stars = models.IntegerField()
-    title = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Rank"
-
 class Student(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -57,9 +70,22 @@ class VerificationKey(models.Model):
     class Meta:
         db_table = "VerificationKey"
 
+class Rank(models.Model):
+    number_stars = models.IntegerField()
+    title = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Rank"
+
+class Program(models.Model):
+    school = models.ForeignKey(School)
+    name = models.CharField(max_length=64)
+    class Meta:
+        db_table = "Program"
+
 class Profile(models.Model):
     student = models.ForeignKey(Student)
     rank = models.ForeignKey(Rank)
+    program = models.ForeignKey(Program)
     school = models.ForeignKey(School)
     phone = models.IntegerField(unique=True, blank=True)
     birthday = models.DateField()
@@ -80,19 +106,6 @@ class Term(models.Model):
     is_current = models.BooleanField()
     class Meta:
         db_table = "Term"
-
-class Faculty(models.Model):
-    school = models.ForeignKey(School)
-    name = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Faculty"
-
-class Course(models.Model):
-    faculty = models.ForeignKey(Faculty)
-    code = models.IntegerField()
-    name = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Course"
 
 class Professor(models.Model):
     faculty = models.ForeignKey(Faculty)
@@ -116,6 +129,35 @@ class Transcript(models.Model):
         db_table = "Transcript"
 
 #========================================
+# Groups and Pages
+#========================================
+
+class GroupType(models.Model):
+    type = models.CharField(max_length=30)
+    class Meta:
+        db_table = "GroupType"
+
+class Group(models.Model):
+    type = models.ForeignKey(GroupType)
+    admin = models.ForeignKey(Profile, null=True, blank=True)
+    course = models.ForeignKey(Course, null=True, blank=True)
+    school = models.ForeignKey(School, null=True, blank=True)
+    name = models.CharField(max_length=128)
+    require_admin_validation = models.BooleanField()
+    date_creation = models.DateTimeField()
+    class Meta:
+        db_table = "Group"
+
+class GroupMembership(models.Model):
+    student = models.ForeignKey(Student)
+    group = models.ForeignKey(Group)
+    date_joined = models.DateTimeField()
+    pending = models.BooleanField()
+    class GroupMembership:
+        db_table = "GroupMembership"
+
+
+#========================================
 # File Sharing & Storage
 #========================================
 
@@ -124,6 +166,7 @@ class Drive(models.Model):
     size = models.IntegerField(max_length=20)
     class Meta:
         db_table = "Drive"
+
 
 #========================================
 # The Fun Stuff
