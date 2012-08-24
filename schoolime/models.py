@@ -151,11 +151,10 @@ class Group(models.Model):
 class GroupMembership(models.Model):
     student = models.ForeignKey(Student)
     group = models.ForeignKey(Group)
-    date_joined = models.DateTimeField()
     pending = models.BooleanField()
-    class GroupMembership:
+    date_joined = models.DateTimeField()
+    class Meta:
         db_table = "GroupMembership"
-
 
 #========================================
 # File Sharing & Storage
