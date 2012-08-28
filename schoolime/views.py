@@ -55,7 +55,7 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
-                              user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
+                              profile=None, user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
                               password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False)
             
             student.save()

@@ -53,22 +53,6 @@ class Address(models.Model):
 # Coursewire
 #========================================
 
-class Student(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
-    email = models.CharField(max_length=75,unique=True)
-    password = models.CharField(max_length=128)
-    is_active = models.BooleanField()
-    is_verified = models.BooleanField()
-    class Meta:
-        db_table = "Student"
-
-class VerificationKey(models.Model):
-    student = models.ForeignKey(Student)
-    key = models.CharField(max_length=30)
-    class Meta:
-        db_table = "VerificationKey"
 
 class Rank(models.Model):
     number_stars = models.IntegerField()
@@ -83,7 +67,6 @@ class Program(models.Model):
         db_table = "Program"
 
 class Profile(models.Model):
-    student = models.ForeignKey(Student)
     rank = models.ForeignKey(Rank)
     program = models.ForeignKey(Program)
     school = models.ForeignKey(School)
@@ -94,6 +77,24 @@ class Profile(models.Model):
     date_joined = models.DateTimeField()
     class Meta:
         db_table = "Profile"
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
+    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    email = models.CharField(max_length=75,unique=True)
+    password = models.CharField(max_length=128)
+    is_active = models.BooleanField()
+    is_verified = models.BooleanField()
+    class Meta:
+        db_table = "Student"
+
+class VerificationKey(models.Model):
+    student = models.ForeignKey(Student)
+    key = models.CharField(max_length=30)
+    class Meta:
+        db_table = "VerificationKey"
 
 class Term(models.Model):
     term = (
