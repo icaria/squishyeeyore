@@ -55,7 +55,7 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
-                              profile=None, user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
+                              profile_id=None, user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
                               password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False)
             
             student.save()
@@ -93,6 +93,12 @@ def activate_user_view(request, key):
         #If found, and the user is not active, the user's account is activated.
         if student.is_verified == False:
             student.is_verified = True
+            
+            if "loggedin" in request.session:
+                if request.session["loggedin"]:
+                    user = request.session["user"];
+                    user.is_verified = True
+            
             student.save()
             
             VerificationKey.objects.get(key=key).delete()

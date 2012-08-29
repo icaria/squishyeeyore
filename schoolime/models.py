@@ -79,9 +79,9 @@ class Profile(models.Model):
         db_table = "Profile"
 
 class Student(models.Model):
+    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
     user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
     email = models.CharField(max_length=75,unique=True)
     password = models.CharField(max_length=128)
