@@ -11,17 +11,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 from schoolime.models import *
 from schoolime.forms import *
+from schoolime.decorators import *
 
 ##More than one view can be displayed on one form
-def user_login_required(f):
-    def wrap(request, *args, **kwargs):
-        #this check the session if userid key exist, if not it will redirect to login page
-        if 'user' not in request.session.keys():
-                return HttpResponseRedirect("login")
-        return f(request, *args, **kwargs)
-    wrap.__doc__=f.__doc__
-    wrap.__name__=f.__name__
-    return wrap
 
 def index_view(request):
     if "loggedin" in request.session:
