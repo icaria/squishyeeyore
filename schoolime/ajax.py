@@ -3,6 +3,15 @@ from django.http import HttpResponse
 from django.http import HttpResponseServerError
 from schoolime.models import *
 
+def check_profile(request):
+    user = request.session["user"]
+    if user.profile:
+        response_str = "true"
+    else:
+        response_str = "false"
+        
+    return HttpResponse(response_str)
+
 def check_registration(request):
     if "email" in request.GET:
         email = request.GET.get("email")

@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 # Create your models here.
@@ -24,7 +25,7 @@ class Faculty(models.Model):
 
 class Course(models.Model):
     faculty = models.ForeignKey(Faculty)
-    code = models.IntegerField()
+    code = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     class Meta:
         db_table = "Course"
@@ -70,6 +71,7 @@ class Profile(models.Model):
     rank = models.ForeignKey(Rank)
     program = models.ForeignKey(Program)
     school = models.ForeignKey(School)
+    display_picture = models.CharField(max_length=255, unique=True, blank=True)
     phone = models.IntegerField(unique=True, blank=True)
     birthday = models.DateField()
     about = models.CharField(max_length=256)
@@ -104,7 +106,6 @@ class Term(models.Model):
     )
     term = models.CharField(max_length=1)
     year = models.IntegerField()
-    is_current = models.BooleanField()
     class Meta:
         db_table = "Term"
 

@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
+from django.db import transaction
+from schoolime.db import *
 from schoolime.models import *
 from schoolime.forms import *
 from schoolime.decorators import *
@@ -54,6 +56,7 @@ def register_view(request):
             
             # send verification email
             key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(20));
+            
             verification = VerificationKey(student=student, key=key)
             verification.save()
             
@@ -88,9 +91,8 @@ def activate_user_view(request, key):
             
             if "loggedin" in request.session:
                 if request.session["loggedin"]:
-                    user = request.session["user"];
-                    user.is_verified = True
-            
+                    request.session["user"] = student
+
             student.save()
             
             VerificationKey.objects.get(key=key).delete()
@@ -100,7 +102,7 @@ def activate_user_view(request, key):
     #If no user is found with the activation key, an error page is passed
     except VerificationKey.DoesNotExist:
         raise Http404(u'No activation key found')
- 
+    
     return render(request, 'registration/activate.html')
     
 def logout_view(request):
@@ -118,7 +120,13 @@ def home_view(request):
     return render(request, 'home.html', {'form': form,})
 
 @user_login_required
-def profile_view(request):
-    pass
+def profile_view(request, user):
+    user = Student.objects.get(user_name=user)
+    form = ProfileForm({'first_name' : user.first_name, 'last_name' : user.last_name})
+    
+    curr_term = get_current_term()
+    classes = Transcript.objects.filter(Q(student_id=user.id), Q(offering__term_id=curr_term.id))
+
+    return render(request, 'profile.html', {'form': form,})
 
     

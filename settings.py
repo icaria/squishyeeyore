@@ -1,6 +1,8 @@
 # Django settings for schoolime project.
 import os
 
+USER_FOLDER = "/home/"
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
