@@ -22,7 +22,8 @@ urlpatterns = patterns('',
     (r'^check-profile', check_profile),
     
     # Home Page
-    (r'^home$', home_view),
+    (r'^home', home_view),
+    (r'^submit-profile', submit_profile),
     
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

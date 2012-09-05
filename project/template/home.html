@@ -33,7 +33,15 @@
         });
         
         $('#profileForm').submit( function() {
-			alert("hello");
+        	
+        	//$.ajax({
+        	//	type: "POST",
+        	//	url: "/submit-profile",
+        	//});
+        	
+        	$('#profileForm').remove();
+        	$('.modal-backdrop').remove();
+			return false;
 		});
     </script>
 {% endblock %}

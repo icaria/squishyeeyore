@@ -12,6 +12,10 @@ def check_profile(request):
         
     return HttpResponse(response_str)
 
+def submit_profile(request):
+    user = request.session["user"]
+    return HttpResponse("true")
+
 def check_registration(request):
     if "email" in request.GET:
         email = request.GET.get("email")
