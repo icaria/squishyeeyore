@@ -32,16 +32,11 @@
 			});
         });
         
-        $('#profileForm').submit( function() {
-        	
-        	//$.ajax({
-        	//	type: "POST",
-        	//	url: "/submit-profile",
-        	//});
-        	
-        	$('#profileForm').remove();
-        	$('.modal-backdrop').remove();
-			return false;
+        $('#save').click( function() {
+        	$.ajax({
+        		type: "POST",
+        		url: "/submit-profile",
+        	});
 		});
     </script>
 {% endblock %}
