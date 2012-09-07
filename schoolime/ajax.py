@@ -1,7 +1,9 @@
+import datetime
 from django.utils import simplejson
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
 from schoolime.models import *
+from schoolime.forms import *
 
 def check_profile(request):
     user = request.session["user"]
@@ -13,8 +15,18 @@ def check_profile(request):
     return HttpResponse(response_str)
 
 def submit_profile(request):
+    now = datetime.date.today()
     user = request.session["user"]
-    return HttpResponse("true")
+    form = HomeForm(request.POST)
+    return HttpResponse(form.errors)
+    
+    if form.is_valid():
+        return HttpResponse("true")
+    
+    return HttpResponse("false")
+    #profile = Profile(rank_id=1, school_id=1, program=, display_picture=None, phone=41, birthday=form.cleaned_data["birthday"], about=form.cleaned_data["about"], last_login=now, date_joined=now)
+    #profile.save()
+     
 
 def check_registration(request):
     if "email" in request.GET:

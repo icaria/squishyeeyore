@@ -2,18 +2,28 @@
 
 {% block content %}
 <div class="modal fade" id="profileModal">
-	<form id="profileForm" class="well" method="post">
+	<form id="profileForm" class="well" action="" method="post">
+		{% csrf_token %}
 		<div class="modal-header" style="vertical-align: top">
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h2>Getting Started...</h2>
 			<p>You've logged in for the first time!<p> 
-			<h5>Please fill out a couple of details so we can prepare ourselves, you can always change this later.</h5>
+			<h5>Please fill out a couple of details so we can prepare ourselves, you can always change this info later!</h5>
   		</div>
   		<div class="modal-body">
-       		
+            <fieldset>
+                {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="control-group">
+                {% for field in form.visible_fields %}
+					{{ field.label_tag }} {{ field }}
+				{% endfor %}
+                </div>
+            </fieldset>    
   		</div>
   		<div class="modal-footer">
-   			<button id="save" class="btn btn-primary" data-dismiss="modal" type="button">Save</button>
+   			<input id="save" class="btn btn-primary" type="submit" value="Save" />
   		</div>
 	</form>
 </div>

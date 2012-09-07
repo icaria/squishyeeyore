@@ -128,6 +128,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 textarea {
   overflow: auto;
+  resize: none;
   vertical-align: top;
 }
 
@@ -921,7 +922,7 @@ input[type="file"] {
 }
 
 select {
-  width: 220px;
+  width: auto;
   border: 1px solid #bbb;
 }
 
@@ -4223,7 +4224,7 @@ input[type="submit"].btn.btn-mini {
 }
 
 .modal.fade.in {
-  top: 50%;
+  top: 42%;
 }
 
 .modal-header {

@@ -2,6 +2,8 @@ import datetime
 from django.db import models
 
 # Create your models here.
+now = datetime.date.today()
+YEAR = range(now.year, now.year-100, -1)
 
 #========================================
 # Location
@@ -16,6 +18,9 @@ class School(models.Model):
     name = models.CharField(max_length=60)
     class Meta:
         db_table = "School"
+    
+    def __unicode__(self):
+        return self.name
 
 class Faculty(models.Model):
     school = models.ForeignKey(School)
@@ -61,16 +66,10 @@ class Rank(models.Model):
     class Meta:
         db_table = "Rank"
 
-class Program(models.Model):
-    school = models.ForeignKey(School)
-    name = models.CharField(max_length=64)
-    class Meta:
-        db_table = "Program"
-
 class Profile(models.Model):
     rank = models.ForeignKey(Rank)
-    program = models.ForeignKey(Program)
     school = models.ForeignKey(School)
+    concentration = models.CharField(max_length=64)
     display_picture = models.CharField(max_length=255, unique=True, blank=True)
     phone = models.IntegerField(unique=True, blank=True)
     birthday = models.DateField()
@@ -99,7 +98,7 @@ class VerificationKey(models.Model):
         db_table = "VerificationKey"
 
 class Term(models.Model):
-    term = (
+    term_choices = (
         ('W', 'Winter'),
         ('S', 'Spring'),
         ('F', 'Fall'),

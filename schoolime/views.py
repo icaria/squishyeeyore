@@ -9,7 +9,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
-from django.db import transaction
 from schoolime.db import *
 from schoolime.models import *
 from schoolime.forms import *

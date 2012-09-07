@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ form.first_name.value }} {{ form.last_name.value }}{% endblock %}
-{%  }
 {% block content %}
+<input id="first_name" type="hidden" value="{{ form.first_name.value }}" />
+<input id="last_name" type="hidden" value="{{ form.last_name.value }}" />
 <div class="hero-unit">
   <h2>Welcome, {{ form.first_name.value }}</h2>
   <p>This is the home page.</p>
@@ -19,6 +20,15 @@
         $(document).ready( function() {
             $('.dropdown-toggle').dropdown();
 
+			$.ajaxSetup({
+				crossDomain: false, // obviates need for sameOrigin test
+			    beforeSend: function(xhr, settings) {
+			        if (!csrfSafeMethod(settings.type)) {
+			            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			        }
+			    }
+			});
+
 			$.ajax({
 				type: "GET",
 				url: "/check-profile",
@@ -27,16 +37,29 @@
 						if(isProfile == "false") {
 							$('#launchProfileModal').click();
 						}
-					},
+					}
+			});
+			
+			$('#save').click( function() {
+				first_name = $('#first_name').val();
+				last_name = $('#last_name').val();
+				school = $('#id_school').val();
+				concentration = $('#id_concentration').val();
+				birthday = $('#id_birthday_year').val() + "-" + $('#id_birthday_month').val() + "-" + $('#id_birthday_day').val();
+				about = $('#id_about').val();
+				$.ajax({
+				    type: "POST",
+				    url: "/submit-profile",
+				    data: "first_name=" + first_name + ";last_name=" + last_name + ";concentration=" + concentration + ";about=" + about,
+				    success: function(val) {
+				    	alert(val);
+				    }
+				});	  
 				
+				return false;      	
+	        	
 			});
         });
         
-        $('#save').click( function() {
-        	$.ajax({
-        		type: "POST",
-        		url: "/submit-profile",
-        	});
-		});
     </script>
 {% endblock %}
