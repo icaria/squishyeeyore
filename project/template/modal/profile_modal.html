@@ -16,9 +16,32 @@
                 <div class="alert alert-error">{{ form.non_field_errors }}</div>
                 {% endif %}
                 <div class="control-group">
-                {% for field in form.visible_fields %}
-					{{ field.label_tag }} {{ field }}
-				{% endfor %}
+                	<table width="98%">
+                        <tr>
+                            <td width="50%" valign="top">
+                                <label>Institution</label>{{ form.school }}
+                            </td>
+                            <td width="50%" valign="top">
+                                <label>Field of Study</label>{{ form.concentration }}
+                            </td>
+                        </tr>
+                        <tr height="15"></tr>
+                        <tr>
+                            <td width="50%" valign="top">
+                                <label>Birthday</label>{{ form.birthday }}
+                            </td>
+                            <td width="50%" valign="top">
+                                <label>Phone</label>{{ form.phone }}
+                            </td>
+                        </tr>
+                        <tr height="15"></tr>
+                        <tr>
+                            <td width="100%" valign="top" colspan="2">
+                                <label>About Me</label>{{ form.about }}
+                            </td>
+                        </tr>
+                    </table>
+
                 </div>
             </fieldset>    
   		</div>

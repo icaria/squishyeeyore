@@ -1,7 +1,7 @@
-import datetime
 from django.utils import simplejson
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
+from django.db.models import Q
 from schoolime.models import *
 from schoolime.forms import *
 
@@ -15,18 +15,39 @@ def check_profile(request):
     return HttpResponse(response_str)
 
 def submit_profile(request):
-    now = datetime.date.today()
     user = request.session["user"]
-    form = HomeForm(request.POST)
-    return HttpResponse(form.errors)
+        
+    school = request.POST.get("school")
+    concentration = request.POST.get("concentration")
+    phone = request.POST.get("phone")
+    birthday = request.POST.get("birthday")
+    birthday_array = birthday.split("-")
+    birthday_date = datetime.date(year=int(birthday_array[0]), month=int(birthday_array[1]), day=int(birthday_array[2]))
+    about = request.POST.get("about")
+
+    #create concentration if it does not exist
     
-    if form.is_valid():
+    conc, isCreated = Concentration.objects.get_or_create(school_id=school, concentration=concentration)
+
+    try:
+        profile = Profile(rank_id=1, school_id=school, concentration_id=conc.pk, display_picture=None, phone=phone, birthday=birthday_date, about=about)
+        profile.save()
+        
+        student = Student.objects.get(id=user.id)
+        student.profile_id = profile.pk
+        student.save()
+        request.session["user"] = student
         return HttpResponse("true")
-    
-    return HttpResponse("false")
-    #profile = Profile(rank_id=1, school_id=1, program=, display_picture=None, phone=41, birthday=form.cleaned_data["birthday"], about=form.cleaned_data["about"], last_login=now, date_joined=now)
-    #profile.save()
-     
+    except:
+        return HttpResponse("false")
+
+def concentration_lookup(request):
+    concentrations = Concentration.objects.filter(Q(concentration__istartswith=request.REQUEST['term']), Q(school_id=int(request.REQUEST['school_id'])))
+    results = []
+    for concentration in concentrations:
+        concentration_dict = {'id':concentration.id, 'label':concentration.concentration, 'value':concentration.concentration}
+        results.append(concentration_dict)
+    return HttpResponse(simplejson.dumps(results),mimetype='application/json')
 
 def check_registration(request):
     if "email" in request.GET:

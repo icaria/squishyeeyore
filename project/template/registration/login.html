@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <table align="center" width="450">
+    <table align="center" width="300">
         <tr>
             <td>
                 <div>
@@ -9,28 +9,31 @@
                         {% csrf_token %}
                         <fieldset>
                             <h3>Login</h3>
-                            <hr>
-                            {% if form.non_field_errors %}
-                            <div class="alert alert-error">
-                                <button class="close" data-dismiss="alert">×</button>
-                                {% for error in form.non_field_errors %}
-                                    <p>{{ error|escape }}</p>
-                                {% endfor %}
+                            <hr>                       
+                            <div class="control-group">
+                            	{% if form.non_field_errors %}
+	                            <div class="alert alert-error">
+	                                <button class="close" data-dismiss="alert">×</button>
+	                                {% for error in form.non_field_errors %}
+	                                    <p>{{ error|escape }}</p>
+	                                {% endfor %}
+	                            </div>
+                            	{% endif %} 
+                           		<table width="97%">
+	                                <tr>
+	                                    <td>
+	                                        <label>Email</label><input id="id_email" type="text" name="email" maxlength="75" />    
+	                                    </td>
+	                                </tr>
+	                                <tr height="15"> </tr>
+	                                <tr>
+	                                    <td>
+	                                        <label>Password</label><input id="id_pw" type="password" name="pw" maxlength="128" />    
+	                                    </td>
+	                                </tr>
+	                            </table>    
                             </div>
-                            {% endif %}
-                            <div class="control-group">  
-                            <table width="450">
-                                <tr>
-                                    <td width="50%">
-                                        <label>Email</label><input id="id_email" type="text" name="email" maxlength="75" />    
-                                    </td>
-                                    <td width="50%">
-                                        <label>Password</label><input id="id_pw" type="password" name="pw" maxlength="128" />    
-                                    </td>
-                                </tr>
-                            </table>    
-                            </div>
-                            <div align="left">
+                            <div align="right">
                                 <input type="submit" name="login" class="btn btn-success" value="Login" />
                                 <a href="/register/" name="register" class="btn btn-warning">Register Now</a>
                                 {% if next %}

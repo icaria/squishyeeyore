@@ -1,5 +1,5 @@
 # Create your views here.
-import random, string
+import random, string, datetime
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse
@@ -32,6 +32,8 @@ def login_view(request):
             user = Student.objects.get(Q(email=email)|Q(user_name=email))
                   
             if check_password(pw, user.password):
+                user.last_login = datetime.datetime.now()
+                user.save()
                 request.session['user'] = user
                 request.session['loggedin'] = True
                 return HttpResponseRedirect("/home")
@@ -47,9 +49,10 @@ def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
+            now = datetime.datetime.now()
             student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
                               profile_id=None, user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
-                              password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False)
+                              password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False, last_login=now, date_joined=now)
             
             student.save()
             

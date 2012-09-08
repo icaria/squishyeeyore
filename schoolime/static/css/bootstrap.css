@@ -821,12 +821,12 @@ input[type="color"],
   color: #555555;
 }
 
-input,
-textarea {
-  width: 210px;
+input {
+  width: 100%;
 }
 
 textarea {
+  width: 100%;
   height: auto;
 }
 
@@ -3638,9 +3638,10 @@ input[type="submit"].btn.btn-mini {
 }
 
 .navbar .brand {
+  font-family: Arial, Helvetica, sans-serif;
   display: block;
   float: left;
-  padding: 8px 20px 12px;
+  padding: 10px 20px 12px;
   margin-left: -20px;
   font-size: 20px;
   font-weight: 200;
@@ -3663,7 +3664,7 @@ input[type="submit"].btn.btn-mini {
 
 .navbar .btn,
 .navbar .btn-group {
-  margin-top: 5px;
+  margin-top: 7px;
 }
 
 .navbar .btn-group .btn {
@@ -3816,7 +3817,7 @@ input[type="submit"].btn.btn-mini {
 
 .navbar .nav > li > a {
   float: none;
-  padding: 9px 10px 11px;
+  padding: 12px 10px 11px;
   line-height: 19px;
   color: #FFFFFF;
   text-decoration: none;

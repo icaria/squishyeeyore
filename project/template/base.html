@@ -5,6 +5,7 @@
 
 <head>
     <link rel="stylesheet" style="text/css" href="{{ STATIC_URL }}css/bootstrap.css" />
+    <link rel="stylesheet" style="text/css" href="{{ STATIC_URL }}css/jquery-ui.css" />
     <title>{% block title %}Schoolime{% endblock %}</title>
 </head>
 
@@ -89,17 +90,16 @@
           </div><!-- /navbar -->
         {% endblock %}
     </div>
-    
-    {% block includes %}
-        <!-- javascript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.django.csrf.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
-    {% endblock %}
-    
+
+    <!-- javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.ui.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.django.csrf.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+
     {% block documentLoad %}
     	<script>
 	        $(document).ready( function() {

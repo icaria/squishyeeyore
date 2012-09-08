@@ -15,23 +15,29 @@ class SchoolType(models.Model):
 
 class School(models.Model):
     type = models.ForeignKey(SchoolType)
-    name = models.CharField(max_length=60)
+    school = models.CharField(max_length=60)
     class Meta:
         db_table = "School"
     
     def __unicode__(self):
-        return self.name
+        return self.school
+
+class Concentration(models.Model):
+    school = models.ForeignKey(School)
+    concentration = models.CharField(max_length=30)
+    class Meta:
+        db_table = "Concentration"
 
 class Faculty(models.Model):
     school = models.ForeignKey(School)
-    name = models.CharField(max_length=30)
+    faculty = models.CharField(max_length=30)
     class Meta:
         db_table = "Faculty"
 
 class Course(models.Model):
     faculty = models.ForeignKey(Faculty)
     code = models.CharField(max_length=10)
-    name = models.CharField(max_length=30)
+    course_name = models.CharField(max_length=30)
     class Meta:
         db_table = "Course"
 
@@ -69,13 +75,11 @@ class Rank(models.Model):
 class Profile(models.Model):
     rank = models.ForeignKey(Rank)
     school = models.ForeignKey(School)
-    concentration = models.CharField(max_length=64)
-    display_picture = models.CharField(max_length=255, unique=True, blank=True)
-    phone = models.IntegerField(unique=True, blank=True)
+    concentration = models.ForeignKey(Concentration)
+    display_picture = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
     birthday = models.DateField()
-    about = models.CharField(max_length=256)
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
+    about = models.CharField(max_length=255)
     class Meta:
         db_table = "Profile"
 
@@ -88,6 +92,8 @@ class Student(models.Model):
     password = models.CharField(max_length=128)
     is_active = models.BooleanField()
     is_verified = models.BooleanField()
+    last_login = models.DateTimeField()
+    date_joined = models.DateTimeField()
     class Meta:
         db_table = "Student"
 
