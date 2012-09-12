@@ -36,8 +36,7 @@ class RegisterForm(forms.ModelForm):
         widgets = {
                    'password': forms.PasswordInput(),
                    }
-        
-    def clean_user_name(self):
-        em = self.cleaned_data['email']
-        return self.cleaned_data['user_name'].strip() or em[:em.index('@')]
+#        
+#    def clean_user_name(self):
+#        
         

@@ -128,6 +128,7 @@ class Student(models.Model):
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
     date_joined = models.DateTimeField()
+    last_login = models.DateTimeField()
     class Meta:
         db_table = "Student"
 

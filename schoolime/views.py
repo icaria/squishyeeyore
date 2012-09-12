@@ -50,8 +50,10 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             now = datetime.datetime.now()
+            em = form.cleaned_data['email']
+            
             student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
-                              profile_id=None, user_name=form.cleaned_data['user_name'], email=form.cleaned_data['email'], 
+                              profile_id=None, user_name=em[:em.index('@')], email=em, 
                               password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False, last_login=now, date_joined=now)
             
             student.save()

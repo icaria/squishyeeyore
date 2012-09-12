@@ -27,7 +27,7 @@ def submit_profile(request):
 
     try:
 
-        drive = Drive()
+        drive = Drive(size=1024)
         drive.save()
         
         #create concentration if it does not exist
