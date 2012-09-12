@@ -33,10 +33,7 @@ def submit_profile(request):
         #create concentration if it does not exist
         conc, isCreated = Concentration.objects.get_or_create(school_id=school, concentration=concentration)
         
-        transcript = Transcript()
-        transcript.save()
-        
-        profile = Profile(rank_id=1, school_id=school, drive_id=drive.pk, concentration_id=conc.pk, transcript_id=transcript.pk, display_picture=None, phone=phone, birthday=birthday_date, about=about)
+        profile = Profile(rank_id=1, school_id=school, drive_id=drive.pk, concentration_id=conc.pk, average=0.0, display_picture=None, phone=phone, birthday=birthday_date, about=about)
         profile.save()
         
         student = Student.objects.get(id=user.id)
