@@ -29,17 +29,19 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             pw = form.cleaned_data['pw']
-            user = Student.objects.get(Q(email=email)|Q(user_name=email))
-                  
-            if check_password(pw, user.password):
-                user.last_login = datetime.datetime.now()
-                user.save()
-                request.session['user'] = user
-                request.session['loggedin'] = True
-                return HttpResponseRedirect("/home")
-            else:
-                form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
-                
+            try:
+                user = Student.objects.get(Q(email=email)|Q(user_name=email))
+                if check_password(pw, user.password):
+                    user.last_login = datetime.datetime.now()
+                    user.save()
+                    request.session['user'] = user
+                    request.session['loggedin'] = True
+                    return HttpResponseRedirect("/home")
+                else:
+                    form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
+            except Student.DoesNotExist:
+                form.errors['__all__'] = form.error_class(["The user name you entered does not exist, please try again."])
+               
     else:
         form = LoginForm()
     
