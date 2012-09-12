@@ -60,48 +60,25 @@ class Address(models.Model):
     city = models.CharField(max_length=30)
     class Meta:
         db_table = "Address"
-
+        
 #========================================
-# Coursewire
+# File Sharing & Storage
 #========================================
 
+class Drive(models.Model):
+    size = models.IntegerField(max_length=20)
+    class Meta:
+        db_table = "Drive"
+        
+#========================================
+# Core
+#========================================
 
 class Rank(models.Model):
     number_stars = models.IntegerField()
     title = models.CharField(max_length=30)
     class Meta:
         db_table = "Rank"
-
-class Profile(models.Model):
-    rank = models.ForeignKey(Rank)
-    school = models.ForeignKey(School)
-    concentration = models.ForeignKey(Concentration)
-    display_picture = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    phone = models.CharField(max_length=30, blank=True, null=True)
-    birthday = models.DateField()
-    about = models.CharField(max_length=255)
-    class Meta:
-        db_table = "Profile"
-
-class Student(models.Model):
-    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
-    email = models.CharField(max_length=75,unique=True)
-    password = models.CharField(max_length=128)
-    is_active = models.BooleanField()
-    is_verified = models.BooleanField()
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
-    class Meta:
-        db_table = "Student"
-
-class VerificationKey(models.Model):
-    student = models.ForeignKey(Student)
-    key = models.CharField(max_length=30)
-    class Meta:
-        db_table = "VerificationKey"
 
 class Term(models.Model):
     term_choices = (
@@ -127,13 +104,47 @@ class Offering(models.Model):
     professor = models.ForeignKey(Professor)
     class Meta:
         db_table = "Offering"
-    
+
+class Profile(models.Model):
+    rank = models.ForeignKey(Rank)
+    school = models.ForeignKey(School)
+    drive = models.ForeignKey(Drive)
+    concentration = models.ForeignKey(Concentration)
+    average = models.DecimalField(max_digits=3, decimal_places=1)
+    display_picture = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    birthday = models.DateField()
+    about = models.CharField(max_length=255)
+    class Meta:
+        db_table = "Profile"
+
+class Student(models.Model):
+    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
+    email = models.CharField(max_length=75,unique=True)
+    password = models.CharField(max_length=128)
+    is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
+    date_joined = models.DateTimeField()
+    class Meta:
+        db_table = "Student"
+
 class Transcript(models.Model):
     student = models.ForeignKey(Student)
     offering = models.ForeignKey(Offering)
-    grade = models.IntegerField(blank=True)
+    grade = models.DecimalField(blank=True, null=True, max_digits=3, decimal_places=1)
+    weight = models.DecimalField(blank=True, null=True, max_digits=3, decimal_places=2)
+    hidden = models.BooleanField(default=False)
     class Meta:
         db_table = "Transcript"
+
+class VerificationKey(models.Model):
+    student = models.ForeignKey(Student)
+    key = models.CharField(max_length=30)
+    class Meta:
+        db_table = "VerificationKey"
 
 #========================================
 # Groups and Pages
@@ -150,7 +161,7 @@ class Group(models.Model):
     course = models.ForeignKey(Course, null=True, blank=True)
     school = models.ForeignKey(School, null=True, blank=True)
     name = models.CharField(max_length=128)
-    require_admin_validation = models.BooleanField()
+    require_admin_validation = models.BooleanField(default=False)
     date_creation = models.DateTimeField()
     class Meta:
         db_table = "Group"
@@ -158,30 +169,62 @@ class Group(models.Model):
 class GroupMembership(models.Model):
     student = models.ForeignKey(Student)
     group = models.ForeignKey(Group)
-    pending = models.BooleanField()
+    pending = models.BooleanField(default=True)
     date_joined = models.DateTimeField()
     class Meta:
         db_table = "GroupMembership"
-
-#========================================
-# File Sharing & Storage
-#========================================
-
-class Drive(models.Model):
+        
+class NewsFeed(models.Model):
+    group = models.ForeignKey(Group)
     student = models.ForeignKey(Student)
-    size = models.IntegerField(max_length=20)
+    message = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
-        db_table = "Drive"
+        db_table = "NewsFeed"
+        
+class Inbox(models.Model):
+    number_message = models.IntegerField(max_length=11)
+    has_new = models.BooleanField(default=False)
+    class Meta:
+        db_table = "Inbox"
 
+class Message(models.Model):
+    inbox = models.ForeignKey(Inbox)
+    sender = models.ForeignKey(Student, related_name='sender')
+    receiver = models.ForeignKey(Student, related_name='receiver')
+    message = models.CharField(max_length=255)
+    send_date = models.DateTimeField()
+    is_read = models.BooleanField(default=False)
+    class Meta:
+        db_table = "Message"
+        
+class Attachment(models.Model):
+    newsfeed = models.ForeignKey(NewsFeed)
+    filename = models.CharField(max_length=255)
+    class Meta:
+        db_table = "Attachment"
 
 #========================================
 # The Fun Stuff
 #========================================
-    
+
 class Activity(models.Model):
-    student = models.ForeignKey(Student)
+    activity = models.CharField(max_length=64)
     class Meta:
         db_table = "Activity"
+
+class ActivityCount(models.Model):
+    student = models.ForeignKey(Student)
+    activity = models.ForeignKey(Activity)
+    count = models.IntegerField(max_length=11)
+    class Meta:
+        db_table = "ActivityCount"
+
+class Notification(models.Model):
+    student = models.ForeignKey(Student)
+    notification = models.CharField(max_length=255)
+    date_time = models.DateTimeField()
+    class Meta:
+        db_table = "Notification"
 
 class Achievement(models.Model):
     description = models.CharField(max_length=120)
@@ -194,4 +237,5 @@ class TrophyCase(models.Model):
     achievement = models.ForeignKey(Achievement)
     class Meta:
         db_table = "TrophyCase"
+
 
