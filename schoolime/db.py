@@ -10,5 +10,6 @@ def get_current_term():
         term_letter = 'S'
     else:
         term_letter = 'F'
-    return Term.objects.get(Q(year=date.year), Q(term=term_letter))
     
+    term, isCreated = Term.objects.get_or_create(year=date.year, term=term_letter)
+    return term

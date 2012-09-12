@@ -4,16 +4,19 @@
 <input id="first_name" type="hidden" value="{{ form.first_name.value }}" />
 <input id="last_name" type="hidden" value="{{ form.last_name.value }}" />
 <input id="launchProfileModal" type="hidden" data-toggle="modal" data-target="#profileModal" />
-<div id="left_nav">
-		
+<div class="content">
+<div class="row">
+	<div class="span3">
+		Left			
+	</div>
+	<div class="span10">
+		Center
+	</div>
+	<div class="span3">
+		Right
+	</div>
 </div>
-<div id="newsfeed">
-	
 </div>
-<div id="right_nav">
-	
-</div>
-
 {% include "modal/profile_modal.html" %}
 
 {% endblock %}

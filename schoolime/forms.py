@@ -35,8 +35,5 @@ class RegisterForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'user_name', 'email', 'password')
         widgets = {
                    'password': forms.PasswordInput(),
-                   }
-#        
-#    def clean_user_name(self):
-#        
+                   } 
         
