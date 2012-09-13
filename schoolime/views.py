@@ -1,5 +1,5 @@
 # Create your views here.
-import random, string, datetime
+import datetime
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse
@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
+from schoolime.ajax import *
 from schoolime.db import *
 from schoolime.models import *
 from schoolime.forms import *
@@ -17,8 +18,8 @@ from schoolime.decorators import *
 ##More than one view can be displayed on one form
 
 def index_view(request):
-    if "loggedin" in request.session:
-        if request.session["loggedin"]:
+    if "schoolime_loggedin" in request.session:
+        if request.session["schoolime_loggedin"]:
             return HttpResponseRedirect("/home")
 
     return render(request, 'index.html')
@@ -34,8 +35,8 @@ def login_view(request):
                 if check_password(pw, user.password):
                     user.last_login = datetime.datetime.now()
                     user.save()
-                    request.session['user'] = user
-                    request.session['loggedin'] = True
+                    request.session['schoolime_user'] = user
+                    request.session['schoolime_loggedin'] = True
                     return HttpResponseRedirect("/home")
                 else:
                     form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
@@ -60,20 +61,8 @@ def register_view(request):
             
             student.save()
             
-            # send verification email
-            key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(20));
-            
-            verification = VerificationKey(student=student, key=key)
-            verification.save()
-            
-            # temporary link goes to localhost
-            link, subject, from_email, to = "http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
-            html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
-            text_content = strip_tags(html_content)
-            
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            request.session['schoolime_user'] = student
+            send_verification_email(request)
             
             return HttpResponseRedirect("/register-success/")
     else:
@@ -95,9 +84,9 @@ def activate_user_view(request, key):
         if student.is_verified == False:
             student.is_verified = True
             
-            if "loggedin" in request.session:
-                if request.session["loggedin"]:
-                    request.session["user"] = student
+            if "schoolime_loggedin" in request.session:
+                if request.session["schoolime_loggedin"]:
+                    request.session["schoolime_user"] = student
 
             student.save()
             
@@ -113,15 +102,15 @@ def activate_user_view(request, key):
     
 def logout_view(request):
     try:
-        del request.session['user']
-        request.session['loggedin'] = False
+        del request.session['schoolime_user']
+        request.session['schoolime_loggedin'] = False
     except KeyError:
         pass
     return HttpResponseRedirect("/")
 
 @user_login_required
 def home_view(request):
-    user = request.session.get('user')
+    user = request.session.get('schoolime_user')
     form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
     return render(request, 'home.html', {'form': form,})
 

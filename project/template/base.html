@@ -17,14 +17,14 @@
               <div class="container">
                 <div class="nav-collapse">
                   <a class="brand" href="{% if request.session.loggedin %}/home{% else %}/{% endif %}">Schoolime</a>
-                  {% if request.session.loggedin %}
+                  {% if request.session.schoolime_loggedin %}
                   <form class="navbar-search pull-left" action="">
                     <i class="icon-search icon-white"> </i> <input type="text" class="search-query span2" placeholder="Search" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search'">
                   </form>
                   {% endif %}
                   <ul class="nav pull-right">
-                    {% if request.session.loggedin %}
-                    <li><a href="/{{ request.session.user.user_name}}">{{ request.session.user.first_name }} {{ request.session.user.last_name }}</a></li>
+                    {% if request.session.schoolime_loggedin %}
+                    <li><a href="/{{ request.session.user.user_name}}">{{ request.session.schoolime_user.first_name }} {{ request.session.schoolime_user.last_name }}</a></li>
                     <li class="divider-vertical"> </li>
                     <li class="dropdown" id="account">
                       <a href="#account" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"> </i> Account <b class="caret"> </b></a>
@@ -47,11 +47,12 @@
             </div><!-- /navbar-inner -->
           </div><!-- /navbar -->
         <div style="padding-top: 60px" align="center">
-        {% if request.session.loggedin and not request.session.user.is_verified %}
-        <div class="alert alert-info">
-            <button class="close" data-dismiss="alert">×</button>
-            Your account has not been verified. Please check your email to verify your account. Click here to resent verification email.
-        </div>
+        {% if request.session.schoolime_loggedin and not request.session.schoolime_user.is_verified %}
+        <div class="alert alert-block alert-info">
+	        <button class="close" data-dismiss="alert">×</button>
+	        <p>Your account has not been verified. Please check your email to verify your account.</p>
+	        <p><input onclick="this.disabled=true;" class="btn btn-info" id="resend-email" style="width:180px" value="Resend Verification Email"></p>
+	    </div>
         {% endif %}
         </div>
         {% endblock %}
@@ -98,7 +99,18 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.django.csrf.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
-
+    <script>
+    	$('#resend-email').click( function() {
+        	$.ajax({
+			    type: "POST",
+			    url: "/send-verification-email",
+			    success: function(val) {
+			    	$('#resend-email').attr('value', 'Verification Email Resent');
+			    	$('resent-email').prop('disabled', true);
+			    }
+			});	
+		});
+    </script>
     {% block documentLoad %}
     	<script>
 	        $(document).ready( function() {

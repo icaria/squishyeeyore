@@ -1,3 +1,7 @@
+import random, string
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.utils import simplejson
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
@@ -39,10 +43,34 @@ def submit_profile(request):
         student = Student.objects.get(id=user.id)
         student.profile_id = profile.pk
         student.save()
+        
         request.session["user"] = student
         return HttpResponse("true")
     except:
         return HttpResponse("false")
+
+def send_verification_email(request):
+    
+    student = request.session["schoolime_user"]
+    
+    # send verification email
+    key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(20));
+    
+    if VerificationKey.objects.filter(student_id=student.id).exists():
+        VerificationKey.objects.filter(student_id=student.id).update(key=key)
+    else:
+        VerificationKey.objects.create(student_id=student.id, key=key)
+
+    # temporary link goes to localhost
+    link, subject, from_email, to = "http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+    html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
+    text_content = strip_tags(html_content)
+    
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+    
+    return HttpResponse("true")
 
 def concentration_lookup(request):
     concentrations = Concentration.objects.filter(Q(concentration__istartswith=request.REQUEST['term']), Q(school_id=int(request.REQUEST['school_id'])))
