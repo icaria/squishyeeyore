@@ -51,7 +51,7 @@
         <div class="alert alert-block alert-info">
 	        <button class="close" data-dismiss="alert">×</button>
 	        <p>Your account has not been verified. Please check your email to verify your account.</p>
-	        <p><input onclick="this.disabled=true;" class="btn btn-info" id="resend-email" style="width:180px" value="Resend Verification Email"></p>
+	        <p><input onclick="this.disabled=true;" class="btn" id="resend-email" style="width:180px" value="Resend Verification Email"></p>
 	    </div>
         {% endif %}
         </div>
@@ -106,17 +106,17 @@
 			    url: "/send-verification-email",
 			    success: function(val) {
 			    	$('#resend-email').attr('value', 'Verification Email Resent');
-			    	$('resent-email').prop('disabled', true);
 			    }
 			});	
 		});
     </script>
+    
     {% block documentLoad %}
-    	<script>
-	        $(document).ready( function() {
-	            $('.dropdown-toggle').dropdown();
-	        });
-	    </script>
+	<script>
+        $(document).ready( function() {
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
     {% endblock %}
 </body>
 
