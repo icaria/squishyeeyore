@@ -112,6 +112,9 @@ def logout_view(request):
 def home_view(request):
     user = request.session.get('schoolime_user')
     form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
+    
+    
+    
     return render(request, 'home.html', {'form': form,})
 
 @user_login_required

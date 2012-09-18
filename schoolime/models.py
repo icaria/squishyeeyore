@@ -37,7 +37,7 @@ class Faculty(models.Model):
 class Course(models.Model):
     faculty = models.ForeignKey(Faculty)
     code = models.CharField(max_length=10)
-    course_name = models.CharField(max_length=30)
+    course_name = models.CharField(max_length=64)
     class Meta:
         db_table = "Course"
 
