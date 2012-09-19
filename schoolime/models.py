@@ -1,7 +1,14 @@
 import datetime
+import neo4django
 from django.db import models
+from neo4django import Incoming
+from neo4django.db import models as gmodels
 
 # Create your models here.
+# This is a mixed model of a RDMS (Relational Database) and GDMS (Graphic Database)
+# Everything associated with one single entity is stored in a relational structure,
+# everything associated with connections between two entity is stored in the graph.
+
 now = datetime.date.today()
 YEAR = range(now.year, now.year-100, -1)
 
@@ -158,7 +165,7 @@ class GroupType(models.Model):
 
 class Group(models.Model):
     type = models.ForeignKey(GroupType)
-    admin = models.ForeignKey(Profile, null=True, blank=True)
+    admin = models.ForeignKey(Student, null=True, blank=True)
     course = models.ForeignKey(Course, null=True, blank=True)
     school = models.ForeignKey(School, null=True, blank=True)
     name = models.CharField(max_length=128)
@@ -167,14 +174,6 @@ class Group(models.Model):
     class Meta:
         db_table = "Group"
 
-class GroupMembership(models.Model):
-    student = models.ForeignKey(Student)
-    group = models.ForeignKey(Group)
-    pending = models.BooleanField(default=True)
-    date_joined = models.DateTimeField()
-    class Meta:
-        db_table = "GroupMembership"
-        
 class NewsFeed(models.Model):
     group = models.ForeignKey(Group)
     student = models.ForeignKey(Student)
@@ -238,5 +237,15 @@ class TrophyCase(models.Model):
     achievement = models.ForeignKey(Achievement)
     class Meta:
         db_table = "TrophyCase"
+             
+#========================================
+# People Graph
+#========================================
 
+class StudentNode(gmodels.NodeModel):
+    #friend = gmodels.Relationship('StudentNode', rel_type=Outgoing.FRIEND, single=False, related_name='friends')
+    pass
 
+class GroupNode(gmodels.NodeModel):
+    #student = gmodels.Relationship('StudentNode', rel_type=Outgoing)
+    pass
