@@ -1,7 +1,7 @@
 import datetime
 import neo4django
 from django.db import models
-from neo4django import Incoming
+from neo4django import Outgoing
 from neo4django.db import models as gmodels
 
 # Create your models here.
@@ -243,9 +243,10 @@ class TrophyCase(models.Model):
 #========================================
 
 class StudentNode(gmodels.NodeModel):
-    #friend = gmodels.Relationship('StudentNode', rel_type=Outgoing.FRIEND, single=False, related_name='friends')
-    pass
+    friend = gmodels.Relationship('StudentNode', rel_type=Outgoing.FRIEND, single=False, related_name='friend')
+    group = gmodels.Relationship('GroupNode', rel_tyle=Outgoing.MEMBER_OF, single=False, related_name='group')
+    id = gmodels.IntegerProperty()
 
 class GroupNode(gmodels.NodeModel):
-    #student = gmodels.Relationship('StudentNode', rel_type=Outgoing)
-    pass
+    student = gmodels.Relationship('StudentNode', rel_type=Outgoing.MEMBER, single=False, related_name='member')
+    id = gmodels.IntegerProperty()
