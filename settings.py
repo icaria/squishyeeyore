@@ -25,9 +25,9 @@ DATABASES = {
 
 NEO4J_DATABASES = {
     'default' : {
-        'HOST':'localhost',
-        'PORT':7474,
-        'ENDPOINT':'/db/data'
+        'HOST': 'localhost',
+        'PORT': 7474,
+        'ENDPOINT': '/db/data'
     }
 }
 

@@ -61,6 +61,10 @@ def register_view(request):
             
             student.save()
             
+            s_name = student.first_name + " " + student.last_name
+            student_node = StudentNode.objects.create(student_id=student.pk, student_name=s_name)
+            student_node.save()
+            
             request.session['schoolime_user'] = student
             send_verification_email(request)
             

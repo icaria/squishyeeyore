@@ -244,9 +244,17 @@ class TrophyCase(models.Model):
 
 class StudentNode(gmodels.NodeModel):
     friend = gmodels.Relationship('StudentNode', rel_type=Outgoing.FRIEND, single=False, related_name='friend')
-    group = gmodels.Relationship('GroupNode', rel_tyle=Outgoing.MEMBER_OF, single=False, related_name='group')
-    id = gmodels.IntegerProperty()
+    group = gmodels.Relationship('GroupNode', rel_type=Outgoing.MEMBER_OF, single=False, related_name='group')
+    student_id = gmodels.IntegerProperty(primary_key=True)
+    student_name = gmodels.StringProperty(indexed=True)
+    
+    def __unicode__(self):
+        return self.student_name
 
 class GroupNode(gmodels.NodeModel):
     student = gmodels.Relationship('StudentNode', rel_type=Outgoing.MEMBER, single=False, related_name='member')
-    id = gmodels.IntegerProperty()
+    group_id = gmodels.IntegerProperty(primary_key=True)
+    group_name = gmodels.StringProperty()
+    
+    def __unicode__(self):
+        return self.group_name
