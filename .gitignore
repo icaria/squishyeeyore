@@ -5,6 +5,11 @@
 *.pyc
 *.pyo
 
+# IntelliJ Project #
+##############
+.idea
+*.iml
+
 # Compiled source #
 ###################
 *.com
