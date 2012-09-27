@@ -1,5 +1,4 @@
 import datetime
-from django.db.models import Q
 from schoolime.models import *
 
 def get_current_term():

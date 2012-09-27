@@ -2,20 +2,13 @@
 import datetime
 from django.shortcuts import render
 from django.http import Http404
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
-from schoolime.ajax import *
-from schoolime.db import *
-from schoolime.models import *
 from schoolime.forms import *
+from schoolime.services.ajax import *
+from schoolime.services.db import *
 from schoolime.decorators import *
-
-##More than one view can be displayed on one form
 
 def index_view(request):
     if "schoolime_loggedin" in request.session:
@@ -116,8 +109,6 @@ def logout_view(request):
 def home_view(request):
     user = request.session.get('schoolime_user')
     form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
-    
-    
     
     return render(request, 'home.html', {'form': form,})
 

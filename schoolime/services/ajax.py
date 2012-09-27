@@ -4,7 +4,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils import simplejson
 from django.http import HttpResponse
-from django.http import HttpResponseServerError
 from django.db.models import Q
 from schoolime.models import *
 from schoolime.forms import *
