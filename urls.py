@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     (r'^activate/(?P<key>[a-zA-Z0-9_.-]+)', activate_user_view),
     (r'^login', login_view),
     (r'^register-success', register_success_view),
-    (r'^registe', register_view),
+    (r'^register', register_view),
     (r'^logout', logout_view),
     
     # Validation

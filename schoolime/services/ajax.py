@@ -61,7 +61,8 @@ def send_verification_email(request):
         VerificationKey.objects.create(student_id=student.id, key=key)
 
     # temporary link goes to localhost
-    link, subject, from_email, to = "http://127.0.0.1:8000/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+    path = request.get_host()
+    link, subject, from_email, to = "http://" + path + "/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
     html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
     text_content = strip_tags(html_content)
     

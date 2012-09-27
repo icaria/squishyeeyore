@@ -137,6 +137,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
