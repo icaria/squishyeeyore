@@ -12,14 +12,25 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'school52_schoolime',                      # Or path to database file if using sqlite3.
+#        'USER': 'school52_service',                      # Not used with sqlite3.
+#        'PASSWORD': 'password123',                  # Not used with sqlite3.
+#        'HOST': 'ecbiz124.inmotionhosting.com',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+#    }
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'school52_schoolime',                      # Or path to database file if using sqlite3.
-        'USER': 'school52_service',                      # Not used with sqlite3.
-        'PASSWORD': 'password123',                  # Not used with sqlite3.
-        'HOST': 'ecbiz124.inmotionhosting.com',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'schoolime',                      # Or path to database file if using sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
+        'PASSWORD': '7892',                  # Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -150,8 +161,6 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    # Our custom auth backend that allows email addresses to be used as usernames.
-    'email_usernames.backends.EmailOrUsernameModelBackend', 
     # Default auth backend that handles everything else.
     'django.contrib.auth.backends.ModelBackend', 
 )

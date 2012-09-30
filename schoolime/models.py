@@ -1,5 +1,6 @@
 import datetime
 import neo4django
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 from neo4django import Outgoing
 from neo4django.db import models as gmodels
@@ -139,6 +140,20 @@ class Student(models.Model):
     class Meta:
         db_table = "Student"
 
+    @classmethod
+    def create(cls, first_name, last_name, email, password):
+        student = cls(first_name=first_name, last_name=last_name,
+                    profile_id=None, user_name=email[:email.index('@')], email=email,
+                    password=make_password(password), is_active=True, is_verified=False,
+                    last_login=now, date_joined=now)
+        student.save()
+        s_name = student.first_name + " " + student.last_name
+        student_node = StudentNode.create(student.pk, s_name)
+        return student
+
+    def activate_student(self):
+        pass
+
 class Transcript(models.Model):
     student = models.ForeignKey(Student)
     offering = models.ForeignKey(Offering)
@@ -247,7 +262,13 @@ class StudentNode(gmodels.NodeModel):
     group = gmodels.Relationship('GroupNode', rel_type=Outgoing.MEMBER_OF, single=False, related_name='group')
     student_id = gmodels.IntegerProperty(primary_key=True)
     student_name = gmodels.StringProperty(indexed=True)
-    
+
+    @classmethod
+    def create(cls, id, name):
+        node = cls(student_id=id, student_name=name)
+        node.save()
+        return node
+
     def __unicode__(self):
         return self.student_name
 

@@ -3,7 +3,6 @@ import datetime
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect
-from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 from schoolime.forms import *
 from schoolime.services.ajax import *
@@ -46,19 +45,11 @@ def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            now = datetime.datetime.now()
-            em = form.cleaned_data['email']
-            
-            student = Student(first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'],
-                              profile_id=None, user_name=em[:em.index('@')], email=em, 
-                              password=make_password(form.cleaned_data['password']), is_active=True, is_verified=False, last_login=now, date_joined=now)
-            
-            student.save()
-            
-            s_name = student.first_name + " " + student.last_name
-            student_node = StudentNode.objects.create(student_id=student.pk, student_name=s_name)
-            student_node.save()
-            
+            student = Student.create(form.cleaned_data['first_name'],
+                                     form.cleaned_data['last_name'],
+                                     form.cleaned_data['email'],
+                                     form.cleaned_data['password'])
+
             request.session['schoolime_user'] = student
             send_verification_email(request)
             
