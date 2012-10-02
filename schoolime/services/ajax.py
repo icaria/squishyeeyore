@@ -9,7 +9,7 @@ from schoolime.models import *
 from schoolime.forms import *
 
 def check_profile(request):
-    user = request.session["user"]
+    user = request.session["schoolime_user"]
     if user.profile:
         response_str = "true"
     else:
@@ -18,7 +18,7 @@ def check_profile(request):
     return HttpResponse(response_str)
 
 def submit_profile(request):
-    user = request.session["user"]
+    user = request.session["schoolime_user"]
         
     school = request.POST.get("school")
     concentration = request.POST.get("concentration")
@@ -43,7 +43,7 @@ def submit_profile(request):
         student.profile_id = profile.pk
         student.save()
         
-        request.session["user"] = student
+        request.session["schoolime_user"] = student
         return HttpResponse("true")
     except:
         return HttpResponse("false")

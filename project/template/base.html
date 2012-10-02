@@ -24,7 +24,7 @@
                   {% endif %}
                   <ul class="nav pull-right">
                     {% if request.session.schoolime_loggedin %}
-                    <li><a href="/{{ request.session.user.user_name}}">{{ request.session.schoolime_user.first_name }} {{ request.session.schoolime_user.last_name }}</a></li>
+                    <li><a href="/{{ request.session.schoolime_user.user_name}}">{{ request.session.schoolime_user.first_name }} {{ request.session.schoolime_user.last_name }}</a></li>
                     <li class="divider-vertical"> </li>
                     <li class="dropdown" id="account">
                       <a href="#account" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"> </i> Account <b class="caret"> </b></a>

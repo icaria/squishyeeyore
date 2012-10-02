@@ -10,8 +10,8 @@ from neo4django.db import models as gmodels
 # Everything associated with one single entity is stored in a relational structure,
 # everything associated with connections between two entity is stored in the graph.
 
-now = datetime.date.today()
-YEAR = range(now.year, now.year-100, -1)
+today = datetime.date.today()
+YEAR = range(today.year, today.year-100, -1)
 
 #========================================
 # Location
@@ -140,8 +140,22 @@ class Student(models.Model):
     class Meta:
         db_table = "Student"
 
+    def has_verified(self):
+        return self.is_verified
+
+    def activate_student(self):
+        self.is_verified = True
+
+    def login(self, pw):
+        if check_password(pw, self.password):
+            self.last_login = datetime.datetime.now()
+            return True
+        else:
+            return False
+
     @classmethod
     def create(cls, first_name, last_name, email, password):
+        now = datetime.datetime.now()
         student = cls(first_name=first_name, last_name=last_name,
                     profile_id=None, user_name=email[:email.index('@')], email=email,
                     password=make_password(password), is_active=True, is_verified=False,
@@ -150,9 +164,6 @@ class Student(models.Model):
         s_name = student.first_name + " " + student.last_name
         student_node = StudentNode.create(student.pk, s_name)
         return student
-
-    def activate_student(self):
-        pass
 
 class Transcript(models.Model):
     student = models.ForeignKey(Student)

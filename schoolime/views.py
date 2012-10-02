@@ -24,8 +24,7 @@ def login_view(request):
             pw = form.cleaned_data['pw']
             try:
                 user = Student.objects.get(Q(email=email)|Q(user_name=email))
-                if check_password(pw, user.password):
-                    user.last_login = datetime.datetime.now()
+                if user.login(pw):
                     user.save()
                     request.session['schoolime_user'] = user
                     request.session['schoolime_loggedin'] = True
@@ -66,20 +65,19 @@ def activate_user_view(request, key):
     
     try:
         #First, the code tries to look up the user based on the activation key
-        user = VerificationKey.objects.get(key=key)
-        student = Student.objects.get(id=user.student_id)
+        verification_key = VerificationKey.objects.get(key=key)
+        student = Student.objects.get(id=verification_key.student_id)
         
         #If found, and the user is not active, the user's account is activated.
-        if student.is_verified == False:
-            student.is_verified = True
-            
+        if not student.has_verified():
+            student.activate_student()
+            student.save()
+
             if "schoolime_loggedin" in request.session:
                 if request.session["schoolime_loggedin"]:
                     request.session["schoolime_user"] = student
 
-            student.save()
-            
-            VerificationKey.objects.get(key=key).delete()
+            verification_key.delete()
         #Else, if the user is already active, an error page is passed
         else:
             raise Http404(u'Account already activated')
