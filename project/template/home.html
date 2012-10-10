@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 {% block title %}{{ form.first_name.value }} {{ form.last_name.value }}{% endblock %}
 {% block content %}
-<input id="first_name" type="hidden" value="{{ form.first_name.value }}" />
-<input id="last_name" type="hidden" value="{{ form.last_name.value }}" />
 <input id="launchProfileModal" type="hidden" data-toggle="modal" data-target="#profileModal" />
 <div class="content">
 <div class="row">
 	<div class="span3">
-		<div id="classes">
-			
+		<div id="classes" class="well">
+            <ul class="nav nav-list">
+                <li class="nav-header">Classes</li>
+                {% for class in classes %}
+                    <li><a href="#">{{ class.code }} [{{ class.course_name|truncatechars:16 }}]</a></li>
+                {% endfor %}
+                <li class="nav-edit"><a href="#">Edit Your Classes</a></li>
+            </ul>
 		</div>			
 	</div>
-	<div class="span6">
-		<div id="newsfeed">
-			
+
+	<div class="span7">
+		<div id="newsfeed" class="well">
+
 		</div>			
 	</div>
-	<div class="span3">
-		<div id="others">
+	<div class="span2">
+		<div id="others" class="well">
 			
 		</div>			
 	</div>
@@ -53,8 +58,6 @@
 			});
 			
 			$('#save').click( function() {
-				first_name = $('#first_name').val();
-				last_name = $('#last_name').val();
 				school = $('#id_school').val();
 				concentration = $('#id_concentration').val();
 				phone = $('#id_phone').val();
@@ -63,9 +66,8 @@
 				$.ajax({
 				    type: "POST",
 				    url: "/submit-profile",
-				    data: "first_name=" + first_name + ";last_name=" + last_name + ";school=" + school +
-				    	 ";concentration=" + concentration + ";phone=" + phone + ";birthday=" + birthday + 
-				    	 ";about=" + about,
+				    data: "school=" + school + ";concentration=" + concentration + ";phone=" + phone +
+                            ";birthday=" + birthday + ";about=" + about,
 				    success: function(val) {
 				    	$('#profileModal').modal('hide');
 				    }

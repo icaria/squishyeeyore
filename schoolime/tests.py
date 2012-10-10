@@ -7,6 +7,15 @@ Replace this with more appropriate tests for your application.
 
 import unittest
 
+class StudentTest(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+
+
 class SimpleTest(unittest.TestCase):
     def test_basic_addition(self):
         """

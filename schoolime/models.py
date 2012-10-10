@@ -2,6 +2,7 @@ import datetime
 import neo4django
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
+from django.db.models import Q
 from neo4django import Outgoing
 from neo4django.db import models as gmodels
 
@@ -99,6 +100,19 @@ class Term(models.Model):
     class Meta:
         db_table = "Term"
 
+    @staticmethod
+    def get_current_term():
+        date = datetime.datetime.now()
+        if date.month < 5:
+            term_letter = 'W'
+        elif date.month < 9:
+            term_letter = 'S'
+        else:
+            term_letter = 'F'
+
+        term, isCreated = Term.objects.get_or_create(year=date.year, term=term_letter)
+        return term
+
 class Professor(models.Model):
     faculty = models.ForeignKey(Faculty)
     first_name = models.CharField(max_length=30)
@@ -164,6 +178,15 @@ class Student(models.Model):
         s_name = student.first_name + " " + student.last_name
         student_node = StudentNode.create(student.pk, s_name)
         return student
+
+    @staticmethod
+    def get_current_courses(student_id, term_id):
+        transcripts = Transcript.objects.filter(Q(student_id=student_id), Q(offering__term_id=term_id))
+        offering_ids = [transcript.offering_id for transcript in transcripts]
+        offerings = Offering.objects.filter(pk__in=offering_ids)
+        course_ids = [offering.course_id for offering in offerings]
+        return Course.objects.filter(pk__in=course_ids)
+
 
 class Transcript(models.Model):
     student = models.ForeignKey(Student)

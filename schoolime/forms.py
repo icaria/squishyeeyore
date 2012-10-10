@@ -14,14 +14,6 @@ class HomeForm(forms.Form):
     phone = forms.CharField(max_length=30, label="Phone")
     birthday = forms.DateField(widget=extras.SelectDateWidget(years=YEAR), label="Birthday")
     about = forms.CharField(widget=forms.Textarea(attrs={'cols':'40', 'rows':'5'}), label="About Me", max_length=255)
-
-    def visible_fields(self):
-        invisibles = []
-        invisibles.append(self.fields['first_name'])
-        invisibles.append(self.fields['last_name'])
-        visibles = super(HomeForm, self).visible_fields()
-        return [v for v in visibles if v.field not in invisibles]
-    
     
 class ProfileForm(forms.ModelForm):
     class Meta:

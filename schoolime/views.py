@@ -1,12 +1,10 @@
 # Create your views here.
-import datetime
 from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from schoolime.forms import *
-from schoolime.services.ajax import *
-from schoolime.services.db import *
+from schoolime.ajax import *
 from schoolime.decorators import *
 
 def index_view(request):
@@ -99,16 +97,17 @@ def logout_view(request):
 def home_view(request):
     user = request.session.get('schoolime_user')
     form = HomeForm({'first_name' : user.first_name, 'last_name' : user.last_name})
-    
-    return render(request, 'home.html', {'form': form,})
+
+    curr_term = Term.get_current_term()
+    classes = Student.get_current_courses(user.id, curr_term.id)
+
+    return render(request, 'home.html', {'form': form, 'classes': classes})
 
 @user_login_required
 def profile_view(request, user):
     user = Student.objects.get(user_name=user)
     form = ProfileForm({'first_name' : user.first_name, 'last_name' : user.last_name})
     
-    curr_term = get_current_term()
-    classes = Transcript.objects.filter(Q(student_id=user.id), Q(offering__term_id=curr_term.id))
 
     return render(request, 'profile.html', {'form': form,})
 

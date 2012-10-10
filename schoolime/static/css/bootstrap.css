@@ -2511,9 +2511,9 @@ table .span24 {
 
 .well {
   min-height: 20px;
-  padding: 19px;
+  padding: 7px;
   margin-bottom: 20px;
-  background-color: #f5f5f5;
+  background-color: #FFFFFF;
   border: 1px solid #eee;
   border: 1px solid rgba(0, 0, 0, 0.05);
   -webkit-border-radius: 4px;
@@ -3237,7 +3237,7 @@ input[type="submit"].btn.btn-mini {
 
 .nav > li > a:hover {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: #BCFF49;
 }
 
 .nav > .pull-right {
@@ -3265,11 +3265,19 @@ input[type="submit"].btn.btn-mini {
   margin-bottom: 0;
 }
 
+.nav-edit {
+ font-size: 11px;
+}
+
 .nav-list > li > a,
 .nav-list .nav-header {
   margin-right: -15px;
   margin-left: -15px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.nav-list .nav-header {
+  color: green;
 }
 
 .nav-list > li > a {
@@ -3280,7 +3288,7 @@ input[type="submit"].btn.btn-mini {
 .nav-list > .active > a:hover {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
-  background-color: #0088cc;
+  background-color: #41A317;
 }
 
 .nav-list [class^="icon-"] {
