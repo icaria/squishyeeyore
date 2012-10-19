@@ -28,7 +28,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'schoolime',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'PASSWORD': '1111',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -39,6 +39,17 @@ NEO4J_DATABASES = {
         'HOST': 'localhost',
         'PORT': 7474,
         'ENDPOINT': '/db/data'
+    }
+}
+
+NEO4J_TEST_DATABASES  = {
+    'default' : {
+        'HOST': 'localhost',
+        'PORT': 7475,
+        'ENDPOINT': '/db/data',
+        'OPTIONS': {
+            'CLEANDB_URI': '/cleandb/secret-key'
+        },
     }
 }
 

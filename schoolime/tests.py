@@ -6,15 +6,18 @@ Replace this with more appropriate tests for your application.
 """
 
 import unittest
+from schoolime.models import Student
+from neo4django import testutils
 
-class StudentTest(unittest.TestCase):
+class StudentTest(testutils.NodeModelTestCase):
     def setUp(self):
-        pass
+        self.user = Student.create("Stephen", "Chen", "stephenchen0@gmail.com", "57425962")
 
     def tearDown(self):
         pass
 
-
+    def test_student_is_created(self):
+        self.assertIsNotNone(self.user.pk)
 
 class SimpleTest(unittest.TestCase):
     def test_basic_addition(self):

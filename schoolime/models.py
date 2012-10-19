@@ -223,9 +223,21 @@ class Group(models.Model):
     class Meta:
         db_table = "Group"
 
+class Attachment(models.Model):
+    filename = models.CharField(max_length=255)
+    class Meta:
+        db_table = "Attachment"
+
+class NewsType(models.Model):
+    type = models.CharField(max_length=64)
+    class Meta:
+        db_table = "NewsType"
+
 class NewsFeed(models.Model):
+    type = models.ForeignKey(NewsType)
     group = models.ForeignKey(Group)
     student = models.ForeignKey(Student)
+    attachment = models.ForeignKey(Attachment, null=True, blank=True)
     message = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         db_table = "NewsFeed"
@@ -245,12 +257,6 @@ class Message(models.Model):
     is_read = models.BooleanField(default=False)
     class Meta:
         db_table = "Message"
-        
-class Attachment(models.Model):
-    newsfeed = models.ForeignKey(NewsFeed)
-    filename = models.CharField(max_length=255)
-    class Meta:
-        db_table = "Attachment"
 
 #========================================
 # The Fun Stuff
@@ -310,6 +316,12 @@ class GroupNode(gmodels.NodeModel):
     student = gmodels.Relationship('StudentNode', rel_type=Outgoing.MEMBER, single=False, related_name='member')
     group_id = gmodels.IntegerProperty(primary_key=True)
     group_name = gmodels.StringProperty()
-    
+
+    @classmethod
+    def create(cls, id, name):
+        node = cls(group_id=id, group_name=name)
+        node.save()
+        return node
+
     def __unicode__(self):
         return self.group_name
