@@ -6,6 +6,7 @@ from django.db.models import Q
 from schoolime.forms import *
 from schoolime.ajax import *
 from schoolime.decorators import *
+from schoolime.models import *
 
 def index_view(request):
     if "schoolime_loggedin" in request.session:
@@ -31,12 +32,12 @@ def login_view(request):
                     form.errors['__all__'] = form.error_class(["The password you entered is incorrect, please try again."])
             except Student.DoesNotExist:
                 form.errors['__all__'] = form.error_class(["The user name you entered does not exist, please try again."])
-               
+
     else:
         form = LoginForm()
-    
+
     return render(request, 'registration/login.html', {'form': form,})
-    
+
 def register_view(request):
 
     if request.method == "POST":
@@ -49,42 +50,42 @@ def register_view(request):
 
             request.session['schoolime_user'] = student
             send_verification_email(request)
-            
+
             return HttpResponseRedirect("/register-success/")
     else:
         form = RegisterForm()
-    
+
     return render(request, 'registration/registration_form.html', {'form': form,})
 
 def register_success_view(request):
     return render(request, 'registration/registration_complete.html')
 
 def activate_user_view(request, key):
-    
-    try:
-        #First, the code tries to look up the user based on the activation key
-        verification_key = VerificationKey.objects.get(key=key)
-        student = Student.objects.get(id=verification_key.student_id)
-        
-        #If found, and the user is not active, the user's account is activated.
-        if not student.has_verified():
-            student.activate_student()
-            student.save()
 
-            if "schoolime_loggedin" in request.session:
-                if request.session["schoolime_loggedin"]:
-                    request.session["schoolime_user"] = student
+#    try:
+#        #First, the code tries to look up the user based on the activation key
+#        verification_key = VerificationKey.objects.get(key=key)
+#        student = Student.objects.get(id=verification_key.student_id)
+#
+#        #If found, and the user is not active, the user's account is activated.
+#        if not student.has_verified():
+#            student.activate_student()
+#            student.save()
+#
+#            if "schoolime_loggedin" in request.session:
+#                if request.session["schoolime_loggedin"]:
+#                    request.session["schoolime_user"] = student
+#
+#            verification_key.delete()
+#        #Else, if the user is already active, an error page is passed
+#        else:
+#            raise Http404(u'Account already activated')
+#    #If no user is found with the activation key, an error page is passed
+#    except VerificationKey.DoesNotExist:
+#        raise Http404(u'No activation key found')
 
-            verification_key.delete()
-        #Else, if the user is already active, an error page is passed
-        else:
-            raise Http404(u'Account already activated')
-    #If no user is found with the activation key, an error page is passed
-    except VerificationKey.DoesNotExist:
-        raise Http404(u'No activation key found')
-    
     return render(request, 'registration/activate.html')
-    
+
 def logout_view(request):
     try:
         del request.session['schoolime_user']
@@ -107,8 +108,8 @@ def home_view(request):
 def profile_view(request, user):
     user = Student.objects.get(user_name=user)
     form = ProfileForm({'first_name' : user.first_name, 'last_name' : user.last_name})
-    
+
 
     return render(request, 'profile.html', {'form': form,})
 
-    
+

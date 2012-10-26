@@ -1,104 +1,76 @@
 import datetime
-import neo4django
 from django.contrib.auth.hashers import make_password, check_password
-from django.db import models
-from django.db.models import Q
 from neo4django import Outgoing
-from neo4django.db import models as gmodels
+from neo4django import Incoming
+from neo4django.db import models
 
 # Create your models here.
-# This is a mixed model of a RDMS (Relational Database) and GDMS (Graphic Database)
-# Everything associated with one single entity is stored in a relational structure,
-# everything associated with connections between two entity is stored in the graph.
 
 today = datetime.date.today()
 YEAR = range(today.year, today.year-100, -1)
 
 #========================================
-# Location
+# Root
 #========================================
-class SchoolType(models.Model):
-    type = models.CharField(max_length=60)
-    class Meta:
-        db_table = "SchoolType"
 
-class School(models.Model):
-    type = models.ForeignKey(SchoolType)
-    school = models.CharField(max_length=60)
-    class Meta:
-        db_table = "School"
-    
+class Entity(models.NodeModel):
     def __unicode__(self):
-        return self.school
+        return "Entity"
 
-class Concentration(models.Model):
-    school = models.ForeignKey(School)
-    concentration = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Concentration"
+class Drive(models.NodeModel):
+    student = models.Relationship('Student', rel_type=Outgoing.DRIVE_STUDENT, related_single=True, related_name='drive')
+    size = models.IntegerProperty(max_length=20)
+    def __unicode__(self):
+        return "Drive"
 
-class Faculty(models.Model):
-    school = models.ForeignKey(School)
-    faculty = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Faculty"
+class SchoolType(models.NodeModel):
+    schools = models.Relationship('School', rel_type=Outgoing.SCHOOLS, related_single=False, related_name='schools')
+    type = models.StringProperty(max_length=60)
+    def __unicode__(self):
+        return self.type
 
-class Course(models.Model):
-    faculty = models.ForeignKey(Faculty)
-    code = models.CharField(max_length=10)
-    course_name = models.CharField(max_length=64)
-    class Meta:
-        db_table = "Course"
+class GroupType(models.NodeModel):
+    groups = models.Relationship('Group', rel_type=Outgoing.GROUPS, related_single=False, related_name='groups')
+    type = models.StringProperty(max_length=20)
+    def __unicode__(self):
+        return self.type
 
-class Country(models.Model):
-    country = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Country"
-    
-class ProvinceState(models.Model):
-    country = models.ForeignKey(Country)
-    province_state = models.CharField(max_length=30)
-    class Meta:
-        db_table = "ProvinceState"
+class ContentType(models.NodeModel):
+    type = models.StringProperty(max_length=64)
+    def __unicode__(self):
+        return self.type
 
-class Address(models.Model):
-    school = models.ForeignKey(School)
-    country = models.ForeignKey(Country)
-    province_state = models.ForeignKey(ProvinceState,null=True)
-    street_address = models.CharField(max_length=60)
-    city = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Address"
-        
-#========================================
-# File Sharing & Storage
-#========================================
+class Rank(models.NodeModel):
+    number_stars = models.IntegerProperty()
+    title = models.StringProperty(max_length=30)
+    def __unicode__(self):
+        return self.title
 
-class Drive(models.Model):
-    size = models.IntegerField(max_length=20)
-    class Meta:
-        db_table = "Drive"
-        
-#========================================
-# Core
-#========================================
+#class Activity(models.NodeModel):
+#    activity = models.StringProperty(max_length=64)
+#
+#    def __unicode__(self):
+#        return self.activity
 
-class Rank(models.Model):
-    number_stars = models.IntegerField()
-    title = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Rank"
+#class ActivityCount(models.NodeModel):
+#    student = models.ForeignKey(Student)
+#    activity = models.ForeignKey(Activity)
+#    count = models.IntegerField(max_length=11)
+#    class Meta:
+#        db_table = "ActivityCount"
 
-class Term(models.Model):
-    term_choices = (
-        ('W', 'Winter'),
-        ('S', 'Spring'),
-        ('F', 'Fall'),
-    )
-    term = models.CharField(max_length=1)
-    year = models.IntegerField()
-    class Meta:
-        db_table = "Term"
+class Achievement(models.NodeModel):
+    name = models.StringProperty(max_lengnth=32)
+    description = models.StringProperty(max_length=255)
+    requirement = models.StringProperty(max_length=64)
+    def __unicode__(self):
+        return self.name
+
+class Term(models.NodeModel):
+    term = models.StringProperty(max_length=1)
+    year = models.IntegerProperty()
+    def __unicode__(self):
+        return u"%s %s" % (self.term, self.year)
 
     @staticmethod
     def get_current_term():
@@ -113,46 +85,93 @@ class Term(models.Model):
         term, isCreated = Term.objects.get_or_create(year=date.year, term=term_letter)
         return term
 
-class Professor(models.Model):
-    faculty = models.ForeignKey(Faculty)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    class Meta:
-        db_table = "Professor"
+class Country(models.NodeModel):
+    provinces_states = models.Relationship('ProvinceState', rel_type=Outgoing.PROVINCES_STATES, related_single=False, related_name='provinces_states')
+    country = models.StringProperty(max_length=30)
+    def __unicode__(self):
+        return self.country
 
-class Offering(models.Model):
-    course = models.ForeignKey(Course)
-    term = models.ForeignKey(Term)
-    professor = models.ForeignKey(Professor)
-    class Meta:
-        db_table = "Offering"
+class ProvinceState(models.NodeModel):
+    country = models.Relationship('Country', rel_type=Outgoing.PROVINCE_STATE_COUNTRY, related_single=True, related_name='country')
+    province_state = models.StringProperty(max_length=30)
+    def __unicode__(self):
+        return u"%s_%s" % (self.country, self.province_state)
 
-class Profile(models.Model):
-    rank = models.ForeignKey(Rank)
-    school = models.ForeignKey(School)
-    drive = models.ForeignKey(Drive)
-    concentration = models.ForeignKey(Concentration)
-    average = models.DecimalField(max_digits=3, decimal_places=1)
-    display_picture = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    phone = models.CharField(max_length=30, blank=True, null=True)
-    birthday = models.DateField()
-    about = models.CharField(max_length=255)
-    class Meta:
-        db_table = "Profile"
+class Address(models.NodeModel):
+    country = models.Relationship('Country', rel_type=Outgoing.ADDRESS_COUNTRY, related_single=True, related_name='country')
+    province_state = models.Relationship('ProvinceState', rel_type=Outgoing.ADDRESS_PROVINCE_STATE, related_single=True, related_name='province_state')
+    street_address = models.StringProperty(max_length=60)
+    city = models.StringProperty(max_length=30)
+    def __unicode__(self):
+        return u"%s, %s, %s %s" % (self.street_address, self.city, self.province_state, self.country)
 
-class Student(models.Model):
-    profile = models.ForeignKey(Profile, unique=True, null=True, blank=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    user_name = models.CharField(max_length=30, unique=True, null=True, blank=True)
-    email = models.CharField(max_length=75,unique=True)
-    password = models.CharField(max_length=128)
-    is_active = models.BooleanField(default=True)
-    is_verified = models.BooleanField(default=False)
-    date_joined = models.DateTimeField()
-    last_login = models.DateTimeField()
-    class Meta:
-        db_table = "Student"
+#========================================
+# Entities
+#========================================
+
+class Person(Entity):
+    school = models.Relationship('School', rel_type=Outgoing.PROFESSOR_SCHOOL, related_single=False, related_name="school")
+    first_name = models.StringProperty(max_length=30)
+    last_name = models.StringProperty(max_length=30)
+    email = models.StringProperty(max_length=75, indexed=True)
+    def __unicode__(self):
+        return u"%s %s" % (self.first_name, self.last_name)
+
+class Content(Entity):
+    actor = models.Relationship('Student', rel_type=Outgoing.SOURCE, related_single=True, related_name='actor')
+    tar = models.Relationship('Entity', rel_type=Outgoing.TARGET, related_single=True, related_name='target')
+    content_type = models.Relationship('ContentType', rel_type=Outgoing.CONTENT_TYPE, related_single=True, related_name='type')
+    content = models.StringProperty(max_length=255)
+    date_time = models.DateTimeProperty()
+    def __unicode__(self):
+        return u"%s_%s" % (self.actor, self.tar)
+
+class Group(Entity):
+    admin = models.Relationship('Student', rel_type=Outgoing.ADMIN, related_single=True, related_name='admin')
+    student = models.Relationship('Student', rel_type=Outgoing.MEMBER, related_single=False, related_name='members')
+    group_type = models.Relationship('GroupType', rel_type=Outgoing.GROUP_TYPE, related_single=True, related_name='group_type')
+    group_name = models.StringProperty(max_length=128, indexed=True)
+    require_admin_validation = models.IntegerProperty()
+    date_creation = models.DateProperty()
+
+    @classmethod
+    def create(cls, name, req_validation):
+        node = cls(group_name=name, require_admin_validatio=req_validation, date_creation=datetime.date.today())
+        node.save()
+        return node
+
+    def __unicode__(self):
+        return self.group_name
+
+#========================================
+# Person Entity
+#========================================
+
+class Professor(Person):
+    # rating properties, quotes.
+    pass
+
+class Student(Person):
+    drive = models.Relationship('Drive', rel_type=Outgoing.STUDENT_DRIVE, related_single=True, related_name='drive')
+    rank = models.Relationship('Rank', rel_type=Outgoing.STUDENT_RANK, related_single=True, related_name='rank')
+    friends = models.Relationship('Student', rel_type=Outgoing.FRIEND, related_single=False, related_name='friends')
+    concentration = models.Relationship('Concentration', rel_type=Outgoing.STUDENT_CONCENTRATION, related_single=False, related_name='concentration')
+    messages = models.Relationship('Message', rel_type=Outgoing.CONTAIN, related_single=False, related_name='contains')
+    groups = models.Relationship('Group', rel_type=Outgoing.STUDENT_GROUPS, related_single=False, related_name='groups')
+    achievements = models.Relationship('Achievement', rel_type=Outgoing.ACHIEVEMENT, related_single=False, related_name='achievements')
+    #offerings = models.Relationship('StudentOffering', rel_type=Outgoing.STUDENT_OFFERINGS, related_single=False, related_name='offerings')
+#    user_name = models.StringProperty(max_length=30, unique=True, null=True, blank=True, indexed=True)
+#    password = models.StringProperty(max_length=128)
+#    display_picture = models.StringProperty(max_length=255, blank=True, null=True)
+#    phone = models.StringProperty(max_length=30, blank=True, null=True)
+#    birthday = models.DateProperty()
+#    about = models.StringProperty(max_length=255)
+#    veracity = models.IntegerProperty()
+#    verification_key = models.StringProperty(max_length=30)
+#    is_active = models.IntegerProperty()
+#    is_verified = models.StringProperty()
+#    date_joined = models.DateTimeProperty()
+#    last_login = models.DateTimeProperty()
 
     def has_verified(self):
         return self.is_verified
@@ -171,157 +190,64 @@ class Student(models.Model):
     def create(cls, first_name, last_name, email, password):
         now = datetime.datetime.now()
         student = cls(first_name=first_name, last_name=last_name,
-                    profile_id=None, user_name=email[:email.index('@')], email=email,
-                    password=make_password(password), is_active=True, is_verified=False,
-                    last_login=now, date_joined=now)
+            user_name=email[:email.index('@')], email=email,
+            password=make_password(password), is_active=True, is_verified=False,
+            last_login=now, date_joined=now)
         student.save()
-        s_name = student.first_name + " " + student.last_name
-        student_node = StudentNode.create(student.pk, s_name)
         return student
 
-    @staticmethod
-    def get_current_courses(student_id, term_id):
-        transcripts = Transcript.objects.filter(Q(student_id=student_id), Q(offering__term_id=term_id))
-        offering_ids = [transcript.offering_id for transcript in transcripts]
-        offerings = Offering.objects.filter(pk__in=offering_ids)
-        course_ids = [offering.course_id for offering in offerings]
-        return Course.objects.filter(pk__in=course_ids)
-
-
-class Transcript(models.Model):
-    student = models.ForeignKey(Student)
-    offering = models.ForeignKey(Offering)
-    grade = models.DecimalField(blank=True, null=True, max_digits=3, decimal_places=1)
-    weight = models.DecimalField(blank=True, null=True, max_digits=3, decimal_places=2)
-    hidden = models.BooleanField(default=False)
-    class Meta:
-        db_table = "Transcript"
-
-class VerificationKey(models.Model):
-    student = models.ForeignKey(Student)
-    key = models.CharField(max_length=30)
-    class Meta:
-        db_table = "VerificationKey"
+#    @staticmethod
+#    def get_current_courses(student_id, term_id):
+#        transcripts = Transcript.objects.filter(Q(student_id=student_id), Q(offering__term_id=term_id))
+#        offering_ids = [transcript.offering_id for transcript in transcripts]
+#        offerings = Offering.objects.filter(pk__in=offering_ids)
+#        course_ids = [offering.course_id for offering in offerings]
+#        return Course.objects.filter(pk__in=course_ids)
 
 #========================================
-# Groups and Pages
+# Content Entity
 #========================================
 
-class GroupType(models.Model):
-    type = models.CharField(max_length=30)
-    class Meta:
-        db_table = "GroupType"
+class Post(Content):
+    attach = models.Relationship('Content', rel_type=Outgoing.ATTACHMENT, related_single=False, related_name='attachment')
+    com = models.Relationship('Content', rel_type=Outgoing.POST_COMMENTS, related_single=False, related_name='comments')
 
-class Group(models.Model):
-    type = models.ForeignKey(GroupType)
-    admin = models.ForeignKey(Student, null=True, blank=True)
-    course = models.ForeignKey(Course, null=True, blank=True)
-    school = models.ForeignKey(School, null=True, blank=True)
-    name = models.CharField(max_length=128)
-    require_admin_validation = models.BooleanField(default=False)
-    date_creation = models.DateTimeField()
-    class Meta:
-        db_table = "Group"
-
-class Attachment(models.Model):
-    filename = models.CharField(max_length=255)
-    class Meta:
-        db_table = "Attachment"
-
-class NewsType(models.Model):
-    type = models.CharField(max_length=64)
-    class Meta:
-        db_table = "NewsType"
-
-class NewsFeed(models.Model):
-    type = models.ForeignKey(NewsType)
-    group = models.ForeignKey(Group)
-    student = models.ForeignKey(Student)
-    attachment = models.ForeignKey(Attachment, null=True, blank=True)
-    message = models.CharField(max_length=255, blank=True, null=True)
-    class Meta:
-        db_table = "NewsFeed"
-        
-class Inbox(models.Model):
-    number_message = models.IntegerField(max_length=11)
-    has_new = models.BooleanField(default=False)
-    class Meta:
-        db_table = "Inbox"
-
-class Message(models.Model):
-    inbox = models.ForeignKey(Inbox)
-    sender = models.ForeignKey(Student, related_name='sender')
-    receiver = models.ForeignKey(Student, related_name='receiver')
-    message = models.CharField(max_length=255)
-    send_date = models.DateTimeField()
-    is_read = models.BooleanField(default=False)
-    class Meta:
-        db_table = "Message"
+class Message(Content):
+    is_read = models.IntegerProperty()
+    is_archived = models.IntegerProperty()
 
 #========================================
-# The Fun Stuff
+# Group Entity
 #========================================
 
-class Activity(models.Model):
-    activity = models.CharField(max_length=64)
-    class Meta:
-        db_table = "Activity"
-
-class ActivityCount(models.Model):
-    student = models.ForeignKey(Student)
-    activity = models.ForeignKey(Activity)
-    count = models.IntegerField(max_length=11)
-    class Meta:
-        db_table = "ActivityCount"
-
-class Notification(models.Model):
-    student = models.ForeignKey(Student)
-    notification = models.CharField(max_length=255)
-    date_time = models.DateTimeField()
-    class Meta:
-        db_table = "Notification"
-
-class Achievement(models.Model):
-    description = models.CharField(max_length=120)
-    requirement = models.CharField(max_length=255)
-    class Meta:
-        db_table = "Achievement"
-
-class TrophyCase(models.Model):
-    student = models.ForeignKey(Student)
-    achievement = models.ForeignKey(Achievement)
-    class Meta:
-        db_table = "TrophyCase"
-             
-#========================================
-# People Graph
-#========================================
-
-class StudentNode(gmodels.NodeModel):
-    friend = gmodels.Relationship('StudentNode', rel_type=Outgoing.FRIEND, single=False, related_name='friend')
-    group = gmodels.Relationship('GroupNode', rel_type=Outgoing.MEMBER_OF, single=False, related_name='group')
-    student_id = gmodels.IntegerProperty(primary_key=True)
-    student_name = gmodels.StringProperty(indexed=True)
-
-    @classmethod
-    def create(cls, id, name):
-        node = cls(student_id=id, student_name=name)
-        node.save()
-        return node
-
+class Course(Group):
+    school = models.Relationship('School', rel_type=Outgoing.COURSE_SCHOOL, related_single=True, related_name='school')
+    offerings = models.Relationship('Offering', rel_type=Outgoing.COURSE_OFFERINGS, related_single=False, related_name='offerings')
+    code = models.StringProperty(max_length=10, indexed=True)
+    course_name = models.StringProperty(max_length=64)
     def __unicode__(self):
-        return self.student_name
+        return self.code
 
-class GroupNode(gmodels.NodeModel):
-    student = gmodels.Relationship('StudentNode', rel_type=Outgoing.MEMBER, single=False, related_name='member')
-    group_id = gmodels.IntegerProperty(primary_key=True)
-    group_name = gmodels.StringProperty()
-
-    @classmethod
-    def create(cls, id, name):
-        node = cls(group_id=id, group_name=name)
-        node.save()
-        return node
-
+class Offering(Group):
+    course = models.Relationship('Course', rel_type=Outgoing.OFFERING_COURSE, related_single=False, related_name='course')
+    #student_offerings = models.Relationship('StudentOffering', rel_type=Outgoing.OFFERING_STUDENTS, related_single=False, related_name='students')
+    term = models.Relationship('Term', rel_type=Outgoing.OFFERING_TERM, related_single=True, related_name='term')
+    professor = models.Relationship('Professor', rel_type=Outgoing.OFFERING_PROFESSOR, related_single=True, related_name='professor')
+    name = models.StringProperty()
     def __unicode__(self):
-        return self.group_name
+        return u"%s_%s" % (self.course, self.term)
+
+class School(Group):
+    address = models.Relationship('Address', rel_type=Outgoing.SCHOOL_ADDRESS, related_single=True, related_name='address')
+    school_type = models.Relationship('SchoolType', rel_type=Outgoing.SCHOOL_TYPE, related_single=True, related_name='school_type')
+    concentrations = models.Relationship('Concentration', rel_type=Outgoing.SCHOOL_CONCENTRATIONS, related_single=False, related_name='concentrations')
+    courses = models.Relationship('Course', rel_type=Outgoing.SCHOOL_COURSES, related_single=False, related_name='courses')
+    school = models.StringProperty(max_length=60)
+    def __unicode__(self):
+        return self.school
+
+class Concentration(Group):
+    school = models.Relationship('School', rel_type=Outgoing.CONCENTRATION_SCHOOL, related_single=True, related_name='school')
+    concentration = models.StringProperty(max_length=30)
+    def __unicode__(self):
+        return self.concentration

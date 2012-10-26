@@ -12,27 +12,14 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': 'school52_schoolime',                      # Or path to database file if using sqlite3.
-#        'USER': 'school52_service',                      # Not used with sqlite3.
-#        'PASSWORD': 'password123',                  # Not used with sqlite3.
-#        'HOST': 'ecbiz124.inmotionhosting.com',                      # Set to empty string for localhost. Not used with sqlite3.
-#        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
-#    }
-#}
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'schoolime',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '1111',                  # Not used with sqlite3.
-        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'schoolime'
     }
 }
+
+DATABASE_ROUTERS = ['neo4django.utils.Neo4djangoIntegrationRouter']
 
 NEO4J_DATABASES = {
     'default' : {
@@ -48,12 +35,10 @@ NEO4J_TEST_DATABASES  = {
         'PORT': 7475,
         'ENDPOINT': '/db/data',
         'OPTIONS': {
-            'CLEANDB_URI': '/cleandb/secret-key'
+            'CLEANDB_URI': '/db/data/cleandb/secret-key'
         },
     }
 }
-
-DATABASE_ROUTERS = ['neo4django.utils.Neo4djangoIntegrationRouter']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -189,6 +174,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'schoolime',
 )
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
