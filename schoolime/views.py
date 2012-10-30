@@ -61,27 +61,26 @@ def register_success_view(request):
 
 def activate_user_view(request, key):
 
-#    try:
-#        #First, the code tries to look up the user based on the activation key
-#        verification_key = VerificationKey.objects.get(key=key)
-#        student = Student.objects.get(id=verification_key.student_id)
-#
-#        #If found, and the user is not active, the user's account is activated.
-#        if not student.has_verified():
-#            student.activate_student()
-#            student.save()
-#
-#            if "schoolime_loggedin" in request.session:
-#                if request.session["schoolime_loggedin"]:
-#                    request.session["schoolime_user"] = student
-#
-#            verification_key.delete()
-#        #Else, if the user is already active, an error page is passed
-#        else:
-#            raise Http404(u'Account already activated')
-#    #If no user is found with the activation key, an error page is passed
-#    except VerificationKey.DoesNotExist:
-#        raise Http404(u'No activation key found')
+    try:
+        #First, the code tries to look up the user based on the activation key
+
+        student = Student.objects.get(verification_key=key)
+
+        #If found, and the user is not active, the user's account is activated.
+        if not student.has_verified():
+            student.activate_student()
+            student.save()
+
+            if "schoolime_loggedin" in request.session:
+                if request.session["schoolime_loggedin"]:
+                    request.session["schoolime_user"] = student
+
+        #Else, if the user is already active, an error page is passed
+        else:
+            raise Http404(u'Account already activated')
+    #If no user is found with the activation key, an error page is passed
+    except Student.DoesNotExist:
+        raise Http404(u'No activation key found')
 
     return render(request, 'registration/activate.html')
 
