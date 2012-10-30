@@ -1,13 +1,18 @@
-import datetime
+import datetime, random, string
 from django.contrib.auth.hashers import make_password, check_password
 from neo4django import Outgoing
 from neo4django import Incoming
 from neo4django.db import models
 
+from neo4django.db.models import relationships
+
 # Create your models here.
 
 today = datetime.date.today()
 YEAR = range(today.year, today.year-100, -1)
+
+#class UserGroupRelationship(relationships.Relationship):
+#    joined = models.DateProperty()
 
 #========================================
 # Root
@@ -45,19 +50,6 @@ class Rank(models.NodeModel):
     title = models.StringProperty(max_length=30)
     def __unicode__(self):
         return self.title
-
-#class Activity(models.NodeModel):
-#    activity = models.StringProperty(max_length=64)
-#
-#    def __unicode__(self):
-#        return self.activity
-
-#class ActivityCount(models.NodeModel):
-#    student = models.ForeignKey(Student)
-#    activity = models.ForeignKey(Activity)
-#    count = models.IntegerField(max_length=11)
-#    class Meta:
-#        db_table = "ActivityCount"
 
 class Achievement(models.NodeModel):
     name = models.StringProperty(max_lengnth=32)
@@ -113,7 +105,7 @@ class Person(Entity):
     school = models.Relationship('School', rel_type=Outgoing.PROFESSOR_SCHOOL, related_single=False, related_name="school")
     first_name = models.StringProperty(max_length=30)
     last_name = models.StringProperty(max_length=30)
-    email = models.StringProperty(max_length=75, indexed=True)
+    email = models.EmailProperty(max_length=75, indexed=True)
     def __unicode__(self):
         return u"%s %s" % (self.first_name, self.last_name)
 
@@ -159,19 +151,18 @@ class Student(Person):
     messages = models.Relationship('Message', rel_type=Outgoing.CONTAIN, related_single=False, related_name='contains')
     groups = models.Relationship('Group', rel_type=Outgoing.STUDENT_GROUPS, related_single=False, related_name='groups')
     achievements = models.Relationship('Achievement', rel_type=Outgoing.ACHIEVEMENT, related_single=False, related_name='achievements')
-    #offerings = models.Relationship('StudentOffering', rel_type=Outgoing.STUDENT_OFFERINGS, related_single=False, related_name='offerings')
-#    user_name = models.StringProperty(max_length=30, unique=True, null=True, blank=True, indexed=True)
-#    password = models.StringProperty(max_length=128)
-#    display_picture = models.StringProperty(max_length=255, blank=True, null=True)
-#    phone = models.StringProperty(max_length=30, blank=True, null=True)
-#    birthday = models.DateProperty()
-#    about = models.StringProperty(max_length=255)
-#    veracity = models.IntegerProperty()
-#    verification_key = models.StringProperty(max_length=30)
-#    is_active = models.IntegerProperty()
-#    is_verified = models.StringProperty()
-#    date_joined = models.DateTimeProperty()
-#    last_login = models.DateTimeProperty()
+    user_name = models.StringProperty(max_length=30, indexed=True)
+    password = models.StringProperty(max_length=128)
+    display_picture = models.StringProperty(max_length=255)
+    phone = models.StringProperty(max_length=30)
+    birthday = models.DateProperty()
+    about = models.StringProperty(max_length=255)
+    veracity = models.IntegerProperty()
+    is_active = models.IntegerProperty()
+    is_verified = models.StringProperty()
+    date_joined = models.DateTimeProperty()
+    last_login = models.DateTimeProperty()
+    verification_key = models.StringProperty(max_length=30)
 
     def has_verified(self):
         return self.is_verified
@@ -189,10 +180,11 @@ class Student(Person):
     @classmethod
     def create(cls, first_name, last_name, email, password):
         now = datetime.datetime.now()
+        key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(20));
         student = cls(first_name=first_name, last_name=last_name,
             user_name=email[:email.index('@')], email=email,
-            password=make_password(password), is_active=True, is_verified=False,
-            last_login=now, date_joined=now)
+            password=make_password(password), veracity=0, is_active=True, is_verified=False,
+            last_login=now, date_joined=now, verification_key=key)
         student.save()
         return student
 
@@ -230,10 +222,8 @@ class Course(Group):
 
 class Offering(Group):
     course = models.Relationship('Course', rel_type=Outgoing.OFFERING_COURSE, related_single=False, related_name='course')
-    #student_offerings = models.Relationship('StudentOffering', rel_type=Outgoing.OFFERING_STUDENTS, related_single=False, related_name='students')
     term = models.Relationship('Term', rel_type=Outgoing.OFFERING_TERM, related_single=True, related_name='term')
     professor = models.Relationship('Professor', rel_type=Outgoing.OFFERING_PROFESSOR, related_single=True, related_name='professor')
-    name = models.StringProperty()
     def __unicode__(self):
         return u"%s_%s" % (self.course, self.term)
 

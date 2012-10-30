@@ -39,7 +39,6 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form,})
 
 def register_view(request):
-
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -48,7 +47,7 @@ def register_view(request):
                                      form.cleaned_data['email'],
                                      form.cleaned_data['password'])
 
-            request.session['schoolime_user'] = student
+            request.session['schoolime_user'] = student.email
             send_verification_email(request)
 
             return HttpResponseRedirect("/register-success/")
