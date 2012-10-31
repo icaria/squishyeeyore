@@ -22,7 +22,6 @@ class ProfileForm(forms.Form):
 class RegisterForm(forms.Form):
     first_name = forms.CharField(max_length=30, label="First name")
     last_name = forms.CharField(max_length=30, label="Last name")
-    user_name = forms.CharField(max_length=30, label="User name")
     email = forms.CharField(max_length=75, label="Email")
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Password2")

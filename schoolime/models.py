@@ -170,6 +170,9 @@ class Student(Person):
     def activate_student(self):
         self.is_verified = True
 
+    def get_verification_key(self):
+        return self.verification_key
+
     def login(self, pw):
         if check_password(pw, self.password):
             self.last_login = datetime.datetime.now()

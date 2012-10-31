@@ -63,7 +63,6 @@ def activate_user_view(request, key):
 
     try:
         #First, the code tries to look up the user based on the activation key
-
         student = Student.objects.get(verification_key=key)
 
         #If found, and the user is not active, the user's account is activated.
@@ -74,7 +73,6 @@ def activate_user_view(request, key):
             if "schoolime_loggedin" in request.session:
                 if request.session["schoolime_loggedin"]:
                     request.session["schoolime_user"] = student
-
         #Else, if the user is already active, an error page is passed
         else:
             raise Http404(u'Account already activated')

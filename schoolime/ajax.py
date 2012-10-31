@@ -49,24 +49,21 @@ def submit_profile(request):
 #
 def send_verification_email(request):
     email = request.session["schoolime_user"]
+    student = Student.objects.get(email=email)
+    key = student.get_verification_key()
 
-#    if VerificationKey.objects.filter(student_id=student.id).exists():
-#        VerificationKey.objects.filter(student_id=student.id).update(key=key)
-#    else:
-#        VerificationKey.objects.create(student_id=student.id, key=key)
-#
-#    # temporary link goes to localhost
-#    path = request.get_host()
-#    link, subject, from_email, to = "http://" + path + "/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
-#    html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
-#    text_content = strip_tags(html_content)
-#
-#    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-#    msg.attach_alternative(html_content, "text/html")
-#    msg.send()
-#
-#    return HttpResponse("true")
-#
+    # temporary link goes to localhost
+    path = request.get_host()
+    link, subject, from_email, to = "http://" + path + "/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+    html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
+    text_content = strip_tags(html_content)
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+    return HttpResponse("true")
+
 def concentration_lookup(request):
 #    concentrations = Concentration.objects.filter(Q(concentration__istartswith=request.REQUEST['term']), Q(school_id=int(request.REQUEST['school_id'])))
     results = []

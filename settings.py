@@ -1,8 +1,6 @@
 # Django settings for schoolime project.
 import os
 
-USER_FOLDER = "/home/"
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -82,11 +80,6 @@ STATIC_ROOT = ''
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-# URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -102,17 +95,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Login Redirect
-LOGIN_REDIRECT_URL = '/home'
-
-# Email Settings
-EMAIL_HOST = 'mail.schoolime.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = 'administration@schoolime.com'
-EMAIL_HOST_PASSWORD = 'Pass123Word'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f8s0x(w0m*!-6ne6^ujt#cqu!kz1(13-ilhv74)cja=qysb0@f'
@@ -132,8 +114,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
-    "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages",
+    "django.contrib.messages.context_processors.messages"
 )
 
 MIDDLEWARE_CLASSES = (
@@ -142,11 +123,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
-
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    )
 
 ROOT_URLCONF = 'urls'
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'Test.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -198,3 +182,15 @@ LOGGING = {
         },
     }
 }
+
+# Email Settings
+EMAIL_HOST = 'mail.schoolime.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'administration@schoolime.com'
+EMAIL_HOST_PASSWORD = 'Pass123Word'
+
+SESSION_ENGINE = (
+    "django.contrib.sessions.backends.cache",
+)
