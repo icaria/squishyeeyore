@@ -1,12 +1,9 @@
 import datetime, random, string
 from django.contrib.auth.hashers import make_password, check_password
 from neo4django import Outgoing
-from neo4django import Incoming
 from neo4django.db import models
-
-from neo4django.db.models import relationships
-
-# Create your models here.
+from neo4django.db.models.query import Query, OPERATORS,\
+    return_filter_from_conditions, Condition
 
 today = datetime.date.today()
 YEAR = range(today.year, today.year-100, -1)
@@ -59,13 +56,13 @@ class Achievement(models.NodeModel):
         return self.name
 
 class Term(models.NodeModel):
-    term = models.StringProperty(max_length=1)
+    term_letter = models.StringProperty(max_length=1)
     year = models.IntegerProperty()
     def __unicode__(self):
-        return u"%s %s" % (self.term, self.year)
+        return u"%s %s" % (self.term_letter, self.year)
 
-    @staticmethod
-    def get_current_term():
+    @classmethod
+    def get_current_term(cls):
         date = datetime.datetime.now()
         if date.month < 5:
             term_letter = 'W'
@@ -73,8 +70,7 @@ class Term(models.NodeModel):
             term_letter = 'S'
         else:
             term_letter = 'F'
-
-        term, isCreated = Term.objects.get_or_create(year=date.year, term=term_letter)
+        (term, isCreated) = cls.objects.get_or_create(year=date.year, term_letter=term_letter)
         return term
 
 class Country(models.NodeModel):
@@ -159,26 +155,27 @@ class Student(Person):
     about = models.StringProperty(max_length=255)
     veracity = models.IntegerProperty()
     is_active = models.IntegerProperty()
-    is_verified = models.StringProperty()
+    is_verified = models.IntegerProperty()
     date_joined = models.DateTimeProperty()
     last_login = models.DateTimeProperty()
     verification_key = models.StringProperty(max_length=30)
 
-    def has_verified(self):
+    def verified(self):
         return self.is_verified
-
-    def activate_student(self):
-        self.is_verified = True
 
     def get_verification_key(self):
         return self.verification_key
 
+    def activate_student(self):
+        self.is_verified = 1
+        self.save()
+
     def login(self, pw):
         if check_password(pw, self.password):
             self.last_login = datetime.datetime.now()
+            self.save()
             return True
-        else:
-            return False
+        return False
 
     @classmethod
     def create(cls, first_name, last_name, email, password):
@@ -191,13 +188,10 @@ class Student(Person):
         student.save()
         return student
 
-#    @staticmethod
-#    def get_current_courses(student_id, term_id):
-#        transcripts = Transcript.objects.filter(Q(student_id=student_id), Q(offering__term_id=term_id))
-#        offering_ids = [transcript.offering_id for transcript in transcripts]
-#        offerings = Offering.objects.filter(pk__in=offering_ids)
-#        course_ids = [offering.course_id for offering in offerings]
-#        return Course.objects.filter(pk__in=course_ids)
+    @staticmethod
+    def get_current_courses(student_id, term_id):
+        course = Offering.objects.filter(groups__contains=student_id, term__exact=term_id)
+        return course
 
 #========================================
 # Content Entity

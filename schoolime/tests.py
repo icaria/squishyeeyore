@@ -5,7 +5,6 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-import unittest
 from schoolime.models import Student
 from schoolime.models import Course
 from schoolime.models import Offering
@@ -57,3 +56,15 @@ class StudentTest(testutils.NodeModelTestCase):
         self.assertEqual(len(groupList), 1)
         self.assertFalse(self.course_node in groupList)
         self.assertTrue(self.offering_node in groupList)
+
+    def test_student_offering_can_be_queried_by_domain(self):
+        self.student_node.groups.add(self.course_node)
+        self.student_node.groups.add(self.offering_node)
+        self.student_node.save()
+
+        list = Offering.objects.all()
+        assert len(list) != 0
+
+#        node = Student.objects.get(id=self.student_node.id).()
+
+#        assert len(node) != 0

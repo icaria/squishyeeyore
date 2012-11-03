@@ -1,4 +1,4 @@
-# Django settings for schoolime project.
+# Django settings for squishyeeyore project.
 import os
 
 DEBUG = True
@@ -35,16 +35,13 @@ NEO4J_TEST_DATABASES  = {
         'OPTIONS': {
             'CLEANDB_URI': '/db/data/cleandb/secret-key'
         },
-    }
+        }
 }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
+# In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
@@ -58,8 +55,11 @@ SITE_ID = 1
 USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
+# calendars according to the current locale.
 USE_L10N = True
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -85,8 +85,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    
-    os.path.join(os.getcwd(), "schoolime/static"), )
+    os.path.join(os.getcwd(), "schoolime/static"),
+)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -97,24 +97,13 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'f8s0x(w0m*!-6ne6^ujt#cqu!kz1(13-ilhv74)cja=qysb0@f'
+SECRET_KEY = '=mw)95#b((@ba@vrnvsw+5de^28t^bj+f5)c^i5hrz6zt@%6ro'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#    'django.template.loaders.eggs.Loader',
-)
-
-# List of default context processors in 1.4
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages"
+#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,24 +114,18 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    )
+)
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'squishyeeyore.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'Test.wsgi.application'
+WSGI_APPLICATION = 'squishyeeyore.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    
-    os.path.join(os.getcwd(), "project/template"),
-)
-
-AUTHENTICATION_BACKENDS = (
-    # Default auth backend that handles everything else.
-    'django.contrib.auth.backends.ModelBackend', 
+    os.path.join(os.getcwd(), "squishyeeyore/templates"),
 )
 
 INSTALLED_APPS = (
@@ -155,22 +138,39 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    # 'django.contrib.admindocs',
     'schoolime',
 )
 
+# Allow access to context variables in template html
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.request",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages"
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
+# the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
@@ -183,14 +183,18 @@ LOGGING = {
     }
 }
 
-# Email Settings
+# Email Settings - Move to environment variable in the future, too lazy right now os.environ("KEY_NAME") /// export KEY_NAME = 'value'
 EMAIL_HOST = 'mail.schoolime.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = 'administration@schoolime.com'
 EMAIL_HOST_PASSWORD = 'Pass123Word'
 
-SESSION_ENGINE = (
-    "django.contrib.sessions.backends.cache",
-)
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+        }
+}

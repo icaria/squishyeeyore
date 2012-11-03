@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 from schoolime.views import *
 
 # Uncomment the next two lines to enable the admin:
@@ -15,16 +15,16 @@ urlpatterns = patterns('',
     (r'^register-success', register_success_view),
     (r'^register', register_view),
     (r'^logout', logout_view),
-    
+
     # Validation
     (r'^check-registration', check_registration),
     (r'^check-profile', check_profile),
-    
+
     # Home Page
     (r'^home', home_view),
     (r'^submit-profile', submit_profile),
     (r'^concentration-lookup', concentration_lookup),
-    
+
     (r'^send-verification-email', send_verification_email),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -32,7 +32,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-            
+
     # Profile Page
     (r'^(?P<user>[a-zA-Z0-9_.-]+)', profile_view),
 )

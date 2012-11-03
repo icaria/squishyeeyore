@@ -15,7 +15,7 @@ def check_profile(request):
 #        response_str = "false"
 #
 #    return HttpResponse(response_str)
-#
+
 def submit_profile(request):
     user = request.session["schoolime_user"]
 #
@@ -46,15 +46,11 @@ def submit_profile(request):
 #        return HttpResponse("true")
 #    except:
 #        return HttpResponse("false")
-#
-def send_verification_email(request):
-    email = request.session["schoolime_user"]
-    student = Student.objects.get(email=email)
-    key = student.get_verification_key()
 
+def send_verification_email(request, student):
     # temporary link goes to localhost
     path = request.get_host()
-    link, subject, from_email, to = "http://" + path + "/activate/" + key, "Activate Schoolime Account", "registration@schoolime.com", student.email
+    link, subject, from_email, to = "http://" + path + "/activate/" + student.verification_key, "Activate Schoolime Account", "registration@schoolime.com", student.email
     html_content = render_to_string('registration/activation_email.html', {'first_name':student.first_name, 'link':link})
     text_content = strip_tags(html_content)
 
