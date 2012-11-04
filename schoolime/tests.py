@@ -8,6 +8,7 @@ Replace this with more appropriate tests for your application.
 from schoolime.models import Student
 from schoolime.models import Course
 from schoolime.models import Offering
+from schoolime.models import Term
 from neo4django import testutils
 
 class StudentTest(testutils.NodeModelTestCase):
@@ -15,6 +16,9 @@ class StudentTest(testutils.NodeModelTestCase):
         self.student_node = Student.objects.create(first_name='Stephen', last_name='Chen', email='stephenchen0@gmail.com')
         self.course_node = Course.objects.create(group_name='CS133', code='CS133', course_name="Test Course")
         self.offering_node = Offering.objects.create(group_name='CS133')
+        self.term_node = Term.objects.create(year=2013, term_letter='F')
+        self.offering_node.offering_term.add(self.term_node)
+        self.offering_node.save()
 
     def tearDown(self):
         pass
@@ -62,9 +66,24 @@ class StudentTest(testutils.NodeModelTestCase):
         self.student_node.groups.add(self.offering_node)
         self.student_node.save()
 
-        list = Offering.objects.all()
-        assert len(list) != 0
+
+        list = list().get(offering_term__contains=self.term_node)#objects.filter(offering_term__contains=self.term_node)
+        print self.term_node
+
+        #list = Offering.objects.select_related(term=)
+        #assert len(list) != 0
 
 #        node = Student.objects.get(id=self.student_node.id).()
 
 #        assert len(node) != 0
+
+class TermTest(testutils.NodeModelTestCase):
+
+    def test_can_create_node_with_get_or_create(self):
+        (node, isCreated) = Term.objects.get_or_create(year=2013, term_letter="W")
+
+        assert(isCreated is True)
+
+        assert node.term_letter == "W"
+        assert node.year == 2013
+

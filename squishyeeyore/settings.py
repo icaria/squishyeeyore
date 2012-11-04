@@ -35,7 +35,7 @@ NEO4J_TEST_DATABASES  = {
         'OPTIONS': {
             'CLEANDB_URI': '/db/data/cleandb/secret-key'
         },
-        }
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:

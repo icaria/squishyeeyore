@@ -56,10 +56,8 @@ class Achievement(models.NodeModel):
         return self.name
 
 class Term(models.NodeModel):
-    term_letter = models.StringProperty(max_length=1)
+    term_letter = models.StringProperty()
     year = models.IntegerProperty()
-    def __unicode__(self):
-        return u"%s %s" % (self.term_letter, self.year)
 
     @classmethod
     def get_current_term(cls):
@@ -177,6 +175,10 @@ class Student(Person):
             return True
         return False
 
+    def get_current_courses(self, student_id, term_id):
+        course = self.objects.select_related()
+        return course
+
     @classmethod
     def create(cls, first_name, last_name, email, password):
         now = datetime.datetime.now()
@@ -187,11 +189,6 @@ class Student(Person):
             last_login=now, date_joined=now, verification_key=key)
         student.save()
         return student
-
-    @staticmethod
-    def get_current_courses(student_id, term_id):
-        course = Offering.objects.filter(groups__contains=student_id, term__exact=term_id)
-        return course
 
 #========================================
 # Content Entity
@@ -219,10 +216,8 @@ class Course(Group):
 
 class Offering(Group):
     course = models.Relationship('Course', rel_type=Outgoing.OFFERING_COURSE, related_single=False, related_name='course')
-    term = models.Relationship('Term', rel_type=Outgoing.OFFERING_TERM, related_single=True, related_name='term')
+    offering_term = models.Relationship('Term', rel_type=Outgoing.OFFERING_TERM, related_single=True, related_name='offering_term')
     professor = models.Relationship('Professor', rel_type=Outgoing.OFFERING_PROFESSOR, related_single=True, related_name='professor')
-    def __unicode__(self):
-        return u"%s_%s" % (self.course, self.term)
 
 class School(Group):
     address = models.Relationship('Address', rel_type=Outgoing.SCHOOL_ADDRESS, related_single=True, related_name='address')
