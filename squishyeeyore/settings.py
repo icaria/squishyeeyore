@@ -1,5 +1,6 @@
 # Django settings for squishyeeyore project.
 import os
+import dj_database_url
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -198,3 +199,5 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
         }
 }
+
+DATABASES['default'] =  dj_database_url.config()
