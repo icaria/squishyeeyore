@@ -1,6 +1,5 @@
 # Django settings for squishyeeyore project.
 import os
-import dj_database_url
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -198,11 +197,4 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': '127.0.0.1:11211',
         }
-}
-
-DATABASES['default'] =  dj_database_url.config()
-NEO4J_DATABASES['default'] = {
-    'HOST': 'bac328492.hosted.neo4j.org',
-    'PORT': 7044,
-    'ENDPOINT': '/db/data'
 }
