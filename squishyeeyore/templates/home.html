@@ -9,7 +9,7 @@
             <ul class="nav nav-list">
                 <li class="nav-header">Classes</li>
                 {% for class in classes %}
-                    <li><a href="#">{{ class.code }} [{{ class.course_name|truncatechars:16 }}]</a></li>
+                    <li><a href="#">{{ class.name }} [{{ class.description|truncatechars:16 }}]</a></li>
                 {% endfor %}
                 <li class="nav-edit"><a href="#">Edit Your Classes</a></li>
             </ul>

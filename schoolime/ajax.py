@@ -8,24 +8,26 @@ from schoolime.models import *
 from schoolime.forms import *
 
 def check_profile(request):
-    user = request.session["schoolime_user"]
-#    if user.profile:
-#        response_str = "true"
-#    else:
-#        response_str = "false"
-#
-#    return HttpResponse(response_str)
+    email = request.session["schoolime_user"]
+    user = Student.objects.get(email=email)
+    if user.has_profile():
+        response_str = "true"
+    else:
+        response_str = "false"
+
+    return HttpResponse(response_str)
 
 def submit_profile(request):
-    user = request.session["schoolime_user"]
-#
-#    school = request.POST.get("school")
-#    concentration = request.POST.get("concentration")
-#    phone = request.POST.get("phone")
-#    birthday = request.POST.get("birthday")
-#    birthday_array = birthday.split("-")
-#    birthday_date = datetime.date(year=int(birthday_array[0]), month=int(birthday_array[1]), day=int(birthday_array[2]))
-#    about = request.POST.get("about")
+    email = request.session["schoolime_user"]
+    user = Student.objects.get(email=email)
+
+    school = request.POST.get("school")
+    concentration = request.POST.get("concentration")
+    phone = request.POST.get("phone")
+    birthday = request.POST.get("birthday")
+    birthday_array = birthday.split("-")
+    birthday_date = datetime.date(year=int(birthday_array[0]), month=int(birthday_array[1]), day=int(birthday_array[2]))
+    about = request.POST.get("about")
 #
 #    try:
 #

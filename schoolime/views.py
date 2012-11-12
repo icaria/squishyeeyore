@@ -79,19 +79,13 @@ def home_view(request):
 
     curr_term = Term.get_current_term()
 
-    #course_node = Course.objects.create(group_name='CS133', code='CS133', course_name="Test Course")
-    #offering_node = Offering.objects.create(group_name='CS133')
-    #offering_node.offering_term.add(curr_term)
-    #offering_node.save()
-
-    classes = []#user.get_current_courses(user.id, curr_term.id)
-
+    classes = user.get_current_courses(curr_term.id)
     return render(request, 'home.html', {'form': form, 'classes': classes})
 
 @user_login_required
 def profile_view(request, user):
     email = request.session.get('schoolime_user')
-    user = Student.objects.get(email=email)
+    user = Student.get(email=email)
     form = ProfileForm({'first_name' : user.first_name, 'last_name' : user.last_name, 'user_name' : user.user_name, 'is_verified' : user.is_verified })
 
 

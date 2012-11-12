@@ -17,7 +17,6 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['neo4django.utils.Neo4djangoIntegrationRouter']
 
 NEO4J_DATABASES = {
     'default' : {
